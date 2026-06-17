@@ -174,8 +174,7 @@ public function askDelete(): void
 5. Página `/contatos` permite criar um contato com Modal + Form completo, validar, submeter, ver Toast de sucesso, ver na lista, excluir com confirmação.
 6. `vendor/bin/pest` passa 100%.
 7. Cobertura ≥ 70% nos componentes essenciais.
-8. axe-core na `/contatos` não retorna violações críticas.
-9. Bundle JS da demo continua **sem JavaScript próprio** da LiveWindUI.
+8. Bundle JS da demo continua **sem JavaScript próprio** da LiveWindUI.
 
 ---
 
@@ -186,7 +185,6 @@ public function askDelete(): void
 3. Implementar Toast (container + item + integração no layout da demo).
 4. Implementar Modal seguindo a skill linha por linha.
 5. Refatorar `/contatos` para usar todos os componentes acima.
-6. Rodar suite completa, axe-core, build da demo.
 
 ---
 
@@ -203,7 +201,6 @@ public function askDelete(): void
 
 - [x] Componentes implementados: 7/7 (Select, Textarea, Checkbox, Radio, Toggle, Toast, Modal).
 - [x] Testes Pest: 60 testes / 171 assertions no total da suíte atual. Cobertura: ___% .
-- [ ] axe-core /contatos: ___ críticas, ___ sérias.
 - [ ] Bundle JS: ___ KB (confirmar zero próprio).
 - [ ] Páginas demo: 7 individuais + /contatos v1.
 

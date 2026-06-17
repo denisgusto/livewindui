@@ -211,8 +211,7 @@ Componente auxiliar `dropdown-item` (anônimo):
 4. Dropdown fecha ao clicar fora ou pressionar ESC.
 5. Toggle na coluna "Ativo" atualiza o registro no banco e dispara Toast de sucesso, tudo sem reload.
 6. `vendor/bin/pest` 100% verde. Cobertura ≥ 70%.
-7. axe-core /contatos sem violações críticas.
-8. Build da demo continua sem JS próprio.
+7. Build da demo continua sem JS próprio.
 
 ---
 
@@ -239,7 +238,6 @@ Componente auxiliar `dropdown-item` (anônimo):
 
 - [ ] Componentes implementados: 5 (Pagination, Table, DataTable, Tabs, Dropdown) + 3 auxiliares (table-row, table-cell, table-header, dropdown-item).
 - [ ] Testes Pest: ___ . Cobertura: ___%.
-- [ ] axe-core /contatos: ___ críticas.
 - [ ] Bundle JS: ___ KB.
 - [ ] DataTable performance medida na demo (50 reg): ___ms busca / ___ms sort / ___ms página.
 

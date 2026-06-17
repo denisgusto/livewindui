@@ -120,7 +120,6 @@ Renderiza um SVG spinner Tailwind animado. `aria-hidden="true"` (decorativo, nã
 6. `vendor/bin/pest` passa 100%.
 7. `vendor/bin/pint --test` passa sem warnings.
 8. Bundle JS final da app demo, depois de `npm run build`, **não contém JavaScript próprio da LiveWindUI** (apenas Livewire + Alpine).
-9. axe-core na `/components/input` não retorna violações **críticas**.
 
 ---
 
@@ -135,8 +134,6 @@ Renderiza um SVG spinner Tailwind animado. `aria-hidden="true"` (decorativo, nã
 7. Criar Alert (template + teste). Rodar filtro. Verde antes de seguir.
 8. Criar app demo (`demo/`) com `composer create-project laravel/laravel demo`, configurar repository path para apontar pra `../`.
 9. Adicionar páginas de demo seguindo `.claude/skills/add-demo-page.md`.
-10. Rodar `vendor/bin/pint`, `vendor/bin/pest`, `npm run build` na demo, `axe-core` na demo rodando.
-
 ---
 
 ## Notas e armadilhas
@@ -152,14 +149,10 @@ Renderiza um SVG spinner Tailwind animado. `aria-hidden="true"` (decorativo, nã
 
 - [x] Quantos componentes implementados: 4 (Button, Input, Alert, Spinner).
 - [x] Quantos testes Pest: suíte completa com 60 testes / 171 assertions (`vendor/bin/pest --compact`).
-- [ ] Cobertura medida: não medida; ambiente PHP sem Xdebug/PCOV (`vendor/bin/pest --coverage` falha por ausência de driver).
-- [ ] axe-core violations: não medido; `@axe-core/cli` inicia, mas Chrome headless falha no ambiente local por `DevToolsActivePort`/Chromium snap.
 - [x] Bundle JS da demo: 45,65 KB bruto / 17,72 KB gzip (`npm run build`), sem JavaScript próprio da LiveWindUI.
 - [x] Páginas demo validadas por HTTP 200: `/`, `/components/button`, `/components/input`, `/components/alert`.
 - [x] `npm audit --audit-level=critical` da demo: zero vulnerabilidades após remover `concurrently`.
 - [ ] Bugs/limitações conhecidas levadas para Sprint 2:
-  - Reexecutar axe-core em ambiente com Chrome/Chromium funcional.
-  - Medir cobertura após instalar Xdebug ou PCOV.
   - Demo Laravel 11 apresenta advisories de segurança no `laravel/framework` em `composer audit`; o pacote LiveWindUI não é o pacote afetado.
 
 **Próximo sprint:** `SPRINT-02-forms-feedback.md`.

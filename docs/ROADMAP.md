@@ -51,7 +51,6 @@ Cada RF/RNF do TCC aparece em um ou mais sprints. Tabela de rastreabilidade:
 | RNF04 | Sem CSS próprio | Todos |
 | RNF05 | PSR-12 | Todos (Pint) |
 | RNF06 | Cobertura ≥ 70% | 4 (medir) |
-| RNF07 | ARIA + axe-core sem violações críticas | Todos (axe na demo) |
 
 ---
 

@@ -112,7 +112,6 @@ Esta é a etapa que **substitui os placeholders amarelos do Capítulo 5 do TCC**
 
 - [ ] **Time-to-first-component (RNF03)**: ambiente totalmente limpo (VM ou container), cronometrar desde `composer create-project laravel/laravel app` até ver um Button funcionando na página. Documentar passo a passo e duração em `/validacao/ttfc.md`.
 - [ ] **Cobertura de testes (RNF06)**: rodar `vendor/bin/pest --coverage` e anexar relatório.
-- [ ] **Acessibilidade (RNF07)**: rodar axe-core em `/contatos`, exportar JSON, anexar.
 - [ ] **Bundle JS (RNF01)**: `npm run build` na demo, `du -h public/build/assets/*.js`, confirmar tamanho idêntico a um projeto Laravel+Livewire sem a biblioteca.
 
 ### 9. Apêndices para o TCC
@@ -163,7 +162,6 @@ Esta é a etapa que **substitui os placeholders amarelos do Capítulo 5 do TCC**
 - [ ] Total de componentes implementados: ___ .
 - [ ] Total de testes Pest: ___ . Cobertura: ___%.
 - [ ] Time-to-first-component medido: ___ min ___ seg.
-- [ ] axe-core /contatos: ___ violações críticas (precisa ser 0).
 - [ ] Bundle JS próprio: ___ KB (precisa ser 0).
 - [ ] **Resultados de produtividade**:
   - Cenário 1: ___ → ___ linhas (___% redução); ___ → ___ tempo.

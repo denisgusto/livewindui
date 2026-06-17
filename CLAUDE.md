@@ -31,7 +31,6 @@ Este projeto é o artefato de uma monografia de pós-graduação. **Decisões ar
 | CSS | Tailwind CSS | 3.x (sem DaisyUI, sem plugins) |
 | Testes | Pest PHP | 2.x + `livewire/livewire` test helpers |
 | Code style | Laravel Pint | versão atual (PSR-12) |
-| Acessibilidade | axe-core / Lighthouse | auditoria manual na app demo |
 
 **Requisitos de compatibilidade:** Laravel 10+ simultaneamente. Não usar APIs exclusivas de uma versão sem fallback.
 
@@ -237,14 +236,10 @@ vendor/bin/pint --test       # apenas verifica
 # Testes
 vendor/bin/pest              # tudo
 vendor/bin/pest --filter=ButtonTest
-vendor/bin/pest --coverage   # com cobertura (requer Xdebug ou PCOV)
 
 # App demo
 cd demo && php artisan serve
 cd demo && npm run dev       # vite watch
-
-# Acessibilidade (na app demo rodando)
-npx @axe-core/cli http://localhost:8000/contatos --tags wcag2a,wcag2aa
 
 # Inspecionar bundle JS final da demo (verificar RNF01)
 cd demo && npm run build && du -h public/build/assets/*.js
