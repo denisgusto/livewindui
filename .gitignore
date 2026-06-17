@@ -1,0 +1,16 @@
+node_modules/
+vendor/
+.phpunit.result.cache
+yarn-error.log
+_DS_Store
+.idea
+.vscode
+.php-cs-fixer.cache
+.DS_Store
+.run
+.claude/settings.local.json
+.superpowers/
+.codex/
+.claude/
+.agents/
+demo/

@@ -1,0 +1,70 @@
+{
+    "name": "denisgusto/livewindui",
+    "description": "LiveWindUI — a modern UI component library for Laravel Livewire, styled with Tailwind CSS.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "livewire",
+        "tailwindcss",
+        "ui",
+        "components"
+    ],
+    "authors": [
+        {
+            "name": "Denis Augusto",
+            "email": "denisgusto@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LiveWindUi\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LiveWindUi\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "livewire/livewire": "^3.5.0|^4.3.0",
+        "illuminate/console": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/pagination": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/view": "^10.0|^11.0|^12.0|^13.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LiveWindUi\\LiveWindUiServiceProvider"
+            ]
+        }
+    },
+    "support": {
+        "issues": "https://github.com/denisgusto/livewindui/issues",
+        "source": "https://github.com/denisgusto/livewindui"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require-dev": {
+        "laravel/pint": "^1.29",
+        "orchestra/testbench": "*",
+        "pestphp/pest": "*",
+        "pestphp/pest-plugin-laravel": "*"
+    },
+    "scripts": {
+        "test": "pest",
+        "format": "pint",
+        "format:test": "pint --test"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
