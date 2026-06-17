@@ -1,3 +1,4 @@
+{{-- Modal: overlay acessivel com eventos globais, ESC, backdrop e trap focus. Props: name, maxWidth, closeable, show. Uso: <x-livewindui::modal name="confirm">...</x-livewindui::modal> --}}
 @props([
     'name' => 'default',
     'maxWidth' => 'md',

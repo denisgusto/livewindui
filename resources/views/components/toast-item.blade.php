@@ -1,3 +1,4 @@
+{{-- ToastItem: item estatico de toast com variante e role semantico. Props: variant, title, message, dismissible. Uso: <x-livewindui::toast-item variant="info" message="OK" /> --}}
 @props([
     'variant' => 'info',
     'title' => null,

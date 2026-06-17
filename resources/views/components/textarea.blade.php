@@ -1,3 +1,4 @@
+{{-- Textarea: area de texto com label, hint, contador, auto-resize, wire:model e erro automatico. Props: model, modelLive, label, hint, rows, maxLength, autoResize. Uso: <x-livewindui::textarea model="notes" :max-length="240" /> --}}
 @props([
     'model' => null,
     'modelLive' => false,

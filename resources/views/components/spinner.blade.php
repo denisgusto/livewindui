@@ -1,3 +1,4 @@
+{{-- Spinner: indicador visual de carregamento. Props: size=sm|md|lg. Uso: <x-livewindui::spinner size="sm" /> --}}
 @props([
     'size' => 'md',
 ])

@@ -6,6 +6,7 @@ namespace LiveWindUi;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use LiveWindUi\Components\Data\DataTable;
 
 class LiveWindUiServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,8 @@ class LiveWindUiServiceProvider extends ServiceProvider
      */
     protected function registerBladeComponents(string $prefix): void
     {
+        Blade::component(DataTable::class, "{$prefix}::data-table");
+
         Blade::anonymousComponentPath(
             __DIR__.'/../resources/views/components',
             $prefix

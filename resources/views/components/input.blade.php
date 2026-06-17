@@ -1,3 +1,4 @@
+{{-- Input: campo de texto com label, hint, slots laterais, wire:model e erro automatico. Props: model, modelLive, label, hint, prefix/suffix slots. Uso: <x-livewindui::input model="email" label="E-mail" /> --}}
 @props([
     'model' => null,
     'modelLive' => false,

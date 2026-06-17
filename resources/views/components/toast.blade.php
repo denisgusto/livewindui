@@ -1,3 +1,4 @@
+{{-- Toast: container global de notificacoes por evento Livewire/browser. Props: position, duration. Uso: <x-livewindui::toast /> --}}
 @props([
     'position' => 'top-right',
     'duration' => 4000,

@@ -1,3 +1,4 @@
+{{-- Select: select nativo com options por array/objeto, slot customizado, wire:model e erro automatico. Props: model, modelLive, label, hint, placeholder, options. Uso: <x-livewindui::select model="category" :options="$options" /> --}}
 @props([
     'model' => null,
     'modelLive' => false,

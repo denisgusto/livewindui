@@ -1,3 +1,4 @@
+{{-- Alert: feedback inline com variantes, titulo, dismiss e auto-dismiss. Props: variant, title, dismissible, autoDismiss. Uso: <x-livewindui::alert variant="success" title="Salvo">OK</x-livewindui::alert> --}}
 @props([
     'variant' => 'info',
     'title' => null,

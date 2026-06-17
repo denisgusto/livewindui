@@ -1,3 +1,4 @@
+{{-- Button: botao base com variantes, tamanhos, loading e confirmacao Livewire. Props: variant, size, icon, loading, confirm, type. Uso: <x-livewindui::button loading="save">Salvar</x-livewindui::button> --}}
 @props([
     'variant' => 'primary',
     'size' => 'md',

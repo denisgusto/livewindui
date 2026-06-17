@@ -1,3 +1,4 @@
+{{-- Toggle: switch acessivel com role=switch e estado Alpine/Livewire. Props: model, label, description, size. Uso: <x-livewindui::toggle model="active" label="Ativo" /> --}}
 @props([
     'model' => null,
     'label' => null,

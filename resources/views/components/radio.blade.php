@@ -1,3 +1,4 @@
+{{-- Radio: opcao unica com label clicavel, descricao, wire:model e erro automatico. Props: model, label, description, value. Uso: <x-livewindui::radio model="plan" value="pro" label="Pro" /> --}}
 @props([
     'model' => null,
     'label' => null,
