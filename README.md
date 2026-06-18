@@ -89,7 +89,7 @@ survives `wire:navigate` via `@persist`):
 Mirroring FluxUI's API, trigger toasts and modals from anywhere:
 
 ```php
-use LiveWindUi\Facades\Livewind;
+use Livewind\Facades\Livewind;
 
 Livewind::toast(message: 'Saved!', title: 'Done', variant: 'success', duration: 3000);
 Livewind::success('Saved!');          // success | info | warning | danger | error
@@ -110,7 +110,7 @@ toasts are flashed to the session and rendered on the next page load.
 Use the trait to dispatch from `$this`, or call the facade directly:
 
 ```php
-use LiveWindUi\Concerns\InteractsWithToasts;
+use Livewind\Concerns\InteractsWithToasts;
 
 class SaveContact extends Component
 {

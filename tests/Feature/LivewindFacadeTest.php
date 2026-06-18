@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use LiveWindUi\Facades\Livewind;
-use LiveWindUi\LiveWindUiManager;
+use Livewind\Facades\Livewind;
+use Livewind\LiveWindUiManager;
 use Livewire\Component;
 use Livewire\Livewire;
 

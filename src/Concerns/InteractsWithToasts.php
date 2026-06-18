@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LiveWindUi\Concerns;
+namespace Livewind\Concerns;
 
-use LiveWindUi\LiveWindUiManager;
+use Livewind\LiveWindUiManager;
 
 /**
  * Dispara toasts a partir de um componente Livewire via evento `livewindui:toast`.

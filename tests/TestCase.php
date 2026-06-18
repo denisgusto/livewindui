@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LiveWindUi\Tests;
 
-use LiveWindUi\LiveWindUiServiceProvider;
+use Livewind\LiveWindUiServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 

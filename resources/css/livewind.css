@@ -3,41 +3,21 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    /* Brand */
-    --color-accent: var(--color-indigo-600);
-    --color-accent-content: var(--color-indigo-700);
+    --color-accent: var(--color-zinc-800);
+    --color-accent-content: var(--color-zinc-800);
     --color-accent-foreground: var(--color-white);
-
-    /* Status */
-    --color-danger: var(--color-red-600);
-    --color-danger-foreground: var(--color-white);
-    --color-success: var(--color-green-600);
-    --color-success-foreground: var(--color-white);
-    --color-warning: var(--color-amber-400);
-    --color-warning-foreground: var(--color-gray-900);
-
-    /* Surfaces */
-    --color-surface: var(--color-white);
-    --color-surface-foreground: var(--color-gray-900);
-    --color-muted: var(--color-gray-100);
-    --color-muted-foreground: var(--color-gray-500);
-    --color-border: var(--color-gray-200);
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-indigo-500);
-        --color-accent-content: var(--color-indigo-400);
-        --color-accent-foreground: var(--color-white);
-
-        --color-danger: var(--color-red-500);
-        --color-success: var(--color-green-500);
-        --color-warning: var(--color-amber-500);
-
-        --color-surface: var(--color-gray-900);
-        --color-surface-foreground: var(--color-gray-100);
-        --color-muted: var(--color-gray-800);
-        --color-muted-foreground: var(--color-gray-400);
-        --color-border: var(--color-gray-700);
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-zinc-800);
     }
 }
+
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+
+@source "../../src/Components/**/*.php";
+@source "../views/components/**/*.blade.php";

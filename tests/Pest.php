@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-use LiveWindUi\Tests\TestCase;
+use Livewind\Tests\TestCase;
 
 uses(TestCase::class)->in('Feature', 'Unit');

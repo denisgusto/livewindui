@@ -44,6 +44,7 @@ class LivewindServiceProvider extends ServiceProvider
     protected function registerBladeComponents(): void
     {
         $prefix = $this->componentPrefix();
+        $this->loadViewsFrom($this->packageViewsPath(), 'livewind');
 
         // 1º: override do consumidor (se existir) — vence se o arquivo for encontrado
         $userPath = resource_path("views/{$prefix}");
@@ -53,6 +54,7 @@ class LivewindServiceProvider extends ServiceProvider
 
         // 2º: anonymous components da lib (default)
         Blade::anonymousComponentPath($this->packageComponentsPath(), $prefix);
+        Blade::componentNamespace('Livewind\\Components', $prefix);
     }
 
     protected function registerBladeDirectives(): void
