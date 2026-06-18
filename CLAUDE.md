@@ -13,7 +13,7 @@ Contexto do projeto para o Claude Code. Leia este arquivo na primeira interaçã
 1. Instalação via Composer + um único ajuste no `tailwind.config.js`. Nada mais.
 2. Reatividade Livewire pronta de fábrica (`wire:model`, `wire:click`, `wire:loading`, validação automática).
 3. API Blade enxuta: o componente mais simples renderiza com **uma única tag**. Customização incremental via atributos.
-4. Customização visual exclusivamente por classes Tailwind via `merge` de atributos. Sem CSS próprio. Sem variáveis CSS próprias.
+4. Customização visual por classes Tailwind via `merge` de atributos. **Exceção (decidida em jun/2026):** theming e dark mode usam variáveis CSS e um preset Tailwind — ver §10.
 5. Composable: componentes complexos (DataTable) são compostos por componentes simples da própria biblioteca (Input, Select, Pagination).
 
 Este projeto é o artefato de uma monografia de pós-graduação. **Decisões arquiteturais e de design da API ficam com o desenvolvedor humano** — você (Claude Code) executa codificação a partir de especificações já decididas. Não invente componentes não solicitados.
@@ -119,9 +119,9 @@ livewindui/
 
 ### 4.4 CSS / Tailwind
 
-- **Zero CSS próprio.** Se você for tentado a criar um `.css`, pare e reformule via classes Tailwind ou refatore o componente.
+- **Um único CSS de tema** (`resources/css/livewindui.css`) com variáveis para o accent (claro/escuro). Fora dele, nenhum outro `.css` próprio. Ver §10.
 - Não usar `@apply` em arquivos CSS da biblioteca.
-- Classes definidas nos templates devem usar apenas utilitários core do Tailwind 3 — **não** depender de plugins (DaisyUI, forms, typography). Se Forms/Typography forem necessários, são responsabilidade do consumidor.
+- Classes definidas nos templates devem usar apenas utilitários core do Tailwind 3 + os tokens do preset (`accent`, `accent-content`, `accent-foreground`) e variantes `dark:`. **Não** depender de plugins (DaisyUI, forms, typography).
 
 ### 4.5 JavaScript
 
@@ -264,7 +264,7 @@ cd demo && npm run build && du -h public/build/assets/*.js
 
 ## 8. Anti-padrões a evitar
 
-- ❌ Criar arquivos CSS (`.css`, `.scss`) próprios da biblioteca.
+- ❌ Criar arquivos CSS (`.css`, `.scss`) próprios da biblioteca — **exceto** o único CSS de tema (`resources/css/livewindui.css`), ver §10.
 - ❌ Adicionar dependências npm (a biblioteca tem zero `package.json`).
 - ❌ Usar `setTimeout` ou JS imperativo solto em templates. Use Alpine.
 - ❌ Hardcode de cores fora do sistema Tailwind (sem `#ff5733` direto, use `bg-red-500` ou `bg-[#ff5733]` se realmente necessário).
@@ -282,4 +282,27 @@ cd demo && npm run build && du -h public/build/assets/*.js
 - Requisitos não funcionais: Quadro 7 do TCC (RNF01–RNF07).
 - Escopo de componentes por iteração: Quadro 5 do TCC e arquivos `SPRINT-*.md`.
 
-Última atualização deste CLAUDE.md: iteração inicial. Revise sempre que mudar uma decisão arquitetural.
+---
+
+## 10. Theming e Dark Mode (decisão de jun/2026)
+
+Decisão do desenvolvedor humano: adotar theming + dark mode no estilo FluxUI, o que
+**flexibiliza** o antigo "sem CSS/variáveis próprias". Arquitetura:
+
+- **`resources/css/livewindui.css`** — único CSS da lib. Define variáveis de accent
+  (canais RGB separados por espaço) em `:root` e `.dark`. Publicável via
+  `vendor:publish --tag=livewindui-theme`.
+- **`tailwind.preset.js`** — preset Tailwind: habilita `darkMode: 'class'` e expõe os
+  tokens `accent`, `accent-content`, `accent-foreground` ligados às variáveis. O
+  consumidor adiciona em `presets: [...]`.
+- **Componentes** usam `bg-accent`/`text-accent-foreground`/`hover:bg-accent-content`
+  para o destaque (tematizável) e variantes `dark:` para superfícies. Cores literais
+  do Tailwind só na paleta do prop `color` do Button/IconButton.
+- **`config('livewindui.theme.accent')`** — nome da cor padrão (informativo; a cor real
+  vem das variáveis CSS).
+- **Dark mode** = estratégia de classe `.dark` no `<html>`. A lib só fornece os estilos;
+  o consumidor aplica a classe (a demo usa um script anti-flash + `window.LiveWindUIAppearance`).
+- **Regra ao editar componentes:** todo background/borda/texto neutro deve ter par `dark:`.
+  O accent não precisa de `dark:` (a variável já troca sob `.dark`).
+
+Última atualização deste CLAUDE.md: jun/2026 — adicionado theming + dark mode (§10).

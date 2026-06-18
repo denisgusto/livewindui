@@ -20,7 +20,7 @@ it('renders modal shell with event listeners and aria attributes', function () {
         ->toContain('aria-modal="true"')
         ->toContain('aria-labelledby="modal-title-confirm-delete"')
         ->toContain("x-on:livewindui-modal-open.window=\"if (\$event.detail.name === 'confirm-delete') open()\"")
-        ->toContain("x-on:livewindui-modal-close.window=\"if (\$event.detail.name === 'confirm-delete') close()\"")
+        ->toContain("x-on:livewindui-modal-close.window=\"if (! \$event.detail.name || \$event.detail.name === 'confirm-delete') close()\"")
         ->toContain('x-on:keydown.escape.window="close()"')
         ->toContain('x-trap.noscroll="show"')
         ->toContain('max-w-sm');
@@ -51,6 +51,14 @@ it('merges consumer classes on the panel', function () {
         ->toContain('divide-y')
         ->toContain('data-test="modal"')
         ->toContain('rounded-lg bg-white shadow-xl');
+});
+
+it('falls back to the configured default max width', function () {
+    config(['livewindui.modal.max_width' => 'xl']);
+
+    $html = Blade::render('<x-livewindui::modal name="cfg">Conteudo</x-livewindui::modal>');
+
+    expect($html)->toContain('max-w-xl');
 });
 
 it('dispatches modal open events from livewire', function () {

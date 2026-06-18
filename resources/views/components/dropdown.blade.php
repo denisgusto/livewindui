@@ -36,7 +36,7 @@
         x-cloak
         x-transition
         role="menu"
-        class="absolute z-50 mt-2 rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none {{ $alignClasses }} {{ $widthClasses }}"
+        class="absolute z-50 mt-2 rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-gray-800 dark:ring-white/10 {{ $alignClasses }} {{ $widthClasses }}"
     >
         {{ $slot }}
     </div>

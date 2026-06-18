@@ -8,12 +8,12 @@
 
 @php
     $variantClasses = match ($variant) {
-        'primary' => 'bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600',
-        'secondary' => 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:outline-gray-400',
-        'danger' => 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600',
-        'outline' => 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-400',
-        'ghost' => 'text-gray-700 hover:bg-gray-100 focus-visible:outline-gray-400',
-        default => 'text-gray-700 hover:bg-gray-100 focus-visible:outline-gray-400',
+        'primary' => 'bg-accent text-accent-foreground hover:bg-accent-content focus-visible:outline-accent',
+        'secondary' => 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600',
+        'danger' => 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600 dark:bg-red-500 dark:hover:bg-red-400',
+        'outline' => 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-400 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800',
+        'ghost' => 'text-gray-700 hover:bg-gray-100 focus-visible:outline-gray-400 dark:text-gray-200 dark:hover:bg-gray-800',
+        default => 'text-gray-700 hover:bg-gray-100 focus-visible:outline-gray-400 dark:text-gray-200 dark:hover:bg-gray-800',
     };
 
     $sizeClasses = match ($size) {

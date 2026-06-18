@@ -8,27 +8,27 @@
 
 @php
     $variantClasses = match ($variant) {
-        'success' => 'border-green-200 bg-green-50 text-green-800',
-        'warning' => 'border-yellow-200 bg-yellow-50 text-yellow-800',
-        'danger' => 'border-red-200 bg-red-50 text-red-800',
-        'info' => 'border-blue-200 bg-blue-50 text-blue-800',
-        default => 'border-blue-200 bg-blue-50 text-blue-800',
+        'success' => 'border-green-200 bg-green-50 text-green-800 dark:border-green-900/50 dark:bg-green-950/50 dark:text-green-200',
+        'warning' => 'border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950/50 dark:text-yellow-200',
+        'danger' => 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-200',
+        'info' => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/50 dark:text-blue-200',
+        default => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/50 dark:text-blue-200',
     };
 
     $titleClasses = match ($variant) {
-        'success' => 'text-green-900',
-        'warning' => 'text-yellow-900',
-        'danger' => 'text-red-900',
-        'info' => 'text-blue-900',
-        default => 'text-blue-900',
+        'success' => 'text-green-900 dark:text-green-100',
+        'warning' => 'text-yellow-900 dark:text-yellow-100',
+        'danger' => 'text-red-900 dark:text-red-100',
+        'info' => 'text-blue-900 dark:text-blue-100',
+        default => 'text-blue-900 dark:text-blue-100',
     };
 
     $bodyClasses = match ($variant) {
-        'success' => 'text-green-700',
-        'warning' => 'text-yellow-700',
-        'danger' => 'text-red-700',
-        'info' => 'text-blue-700',
-        default => 'text-blue-700',
+        'success' => 'text-green-700 dark:text-green-300',
+        'warning' => 'text-yellow-700 dark:text-yellow-300',
+        'danger' => 'text-red-700 dark:text-red-300',
+        'info' => 'text-blue-700 dark:text-blue-300',
+        default => 'text-blue-700 dark:text-blue-300',
     };
 
     $isInteractive = $dismissible || filled($autoDismiss);

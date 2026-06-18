@@ -70,6 +70,143 @@ Every component is consumed with the configurable prefix:
 <x-livewindui::button>Save</x-livewindui::button>
 ```
 
+## Toasts & Modals
+
+LiveWindUI ships a global toast container and a named modal, both driven by events
+with **zero package JavaScript files** (logic lives in inline Alpine).
+
+### Container
+
+Add the toast container once in your layout (it auto-stacks, auto-dismisses and
+survives `wire:navigate` via `@persist`):
+
+```blade
+<x-livewindui::toast />
+```
+
+### The `Livewind` facade
+
+Mirroring FluxUI's API, trigger toasts and modals from anywhere:
+
+```php
+use LiveWindUi\Facades\Livewind;
+
+Livewind::toast(message: 'Saved!', title: 'Done', variant: 'success', duration: 3000);
+Livewind::success('Saved!');          // success | info | warning | danger | error
+Livewind::error('Something failed');  // error -> danger variant
+
+Livewind::modal('confirm-delete')->show();   // ->open() / ->close()
+Livewind::modals()->close();                  // close every open modal
+```
+
+`duration` is in milliseconds; `0` keeps the toast until dismissed. The payload
+also accepts FluxUI aliases (`heading`/`text`) besides `title`/`message`.
+
+When called **outside** a Livewire request (e.g. a controller before a redirect),
+toasts are flashed to the session and rendered on the next page load.
+
+### From a Livewire component
+
+Use the trait to dispatch from `$this`, or call the facade directly:
+
+```php
+use LiveWindUi\Concerns\InteractsWithToasts;
+
+class SaveContact extends Component
+{
+    use InteractsWithToasts;
+
+    public function save(): void
+    {
+        $this->toast(message: 'Contact saved', variant: 'success');
+    }
+}
+```
+
+### From JavaScript / Alpine
+
+```js
+window.LiveWindUI.toast('Quick message');
+window.LiveWindUI.toast({ variant: 'success', title: 'Done', message: 'Saved!' });
+```
+
+### Defaults
+
+Publish the config to change defaults for `toast` (`position`, `duration`, `max`)
+and `modal` (`max_width`):
+
+```php
+'toast' => ['position' => 'top-right', 'duration' => 4000, 'max' => 5],
+'modal' => ['max_width' => 'md'],
+```
+
+## Theming & Dark Mode
+
+LiveWindUI ships a themeable **accent** color (CSS variables) and built-in **dark mode**
+(`.dark` class strategy), inspired by FluxUI but Tailwind 3-native.
+
+### Setup
+
+Add the preset and import the theme CSS:
+
+```js
+// tailwind.config.js
+import liveWindUi from './vendor/denisgusto/livewindui/tailwind.preset.js';
+
+export default {
+  presets: [liveWindUi], // enables darkMode:'class' + accent tokens
+  content: [
+    './resources/**/*.blade.php',
+    './vendor/denisgusto/livewindui/resources/views/**/*.blade.php',
+  ],
+};
+```
+
+```css
+/* resources/css/app.css */
+@import '../../vendor/denisgusto/livewindui/resources/css/livewindui.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Publish them to customize:
+
+```bash
+php artisan vendor:publish --tag=livewindui-theme
+```
+
+### Theming
+
+Components use the `accent` token, so overriding three CSS variables re-themes everything:
+
+```css
+:root { --lw-accent: 225 29 72; --lw-accent-content: 190 18 60; --lw-accent-foreground: 255 255 255; }
+.dark { --lw-accent: 251 113 133; --lw-accent-content: 253 164 175; }
+```
+
+Buttons also accept a per-instance `color` (any Tailwind color) and Flux-style
+`variant` (`primary`, `filled`, `outline`, `ghost`, `subtle`, `danger`):
+
+```blade
+<x-livewindui::button>Primary (accent)</x-livewindui::button>
+<x-livewindui::button variant="subtle">Subtle</x-livewindui::button>
+<x-livewindui::button color="rose">Delete</x-livewindui::button>
+```
+
+### Dark mode
+
+Every component carries `dark:` variants. Toggle by adding/removing `.dark` on `<html>`.
+A no-flash snippet for your layout `<head>`:
+
+```html
+<script>
+  const m = localStorage.getItem('lw-appearance') || 'system';
+  const dark = m === 'dark' || (m === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', dark);
+</script>
+```
+
 ## Philosophy
 
 - **Zero package JavaScript files:** behavior is expressed through Livewire and inline Alpine directives.

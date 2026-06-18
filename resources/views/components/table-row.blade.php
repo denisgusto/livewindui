@@ -5,7 +5,7 @@
 
 <tr {{ $attributes->class([
     'transition',
-    'bg-indigo-50' => $selected,
+    'bg-accent/10 dark:bg-accent/20' => $selected,
 ]) }}>
     {{ $slot }}
 </tr>

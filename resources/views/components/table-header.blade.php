@@ -9,14 +9,14 @@
     scope="col"
     role="columnheader"
     {{ $attributes->class([
-        'px-4 py-3 text-left text-xs font-semibold uppercase tracking-normal text-gray-600',
+        'px-4 py-3 text-left text-xs font-semibold uppercase tracking-normal text-gray-600 dark:text-gray-400',
         'select-none' => $sortable,
     ]) }}
 >
     @if ($sortable)
-        <button type="button" class="inline-flex items-center gap-1 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button type="button" class="inline-flex items-center gap-1 rounded-sm focus:outline-none focus:ring-2 focus:ring-accent">
             <span>{{ $slot }}</span>
-            <span aria-hidden="true" class="text-gray-400">
+            <span aria-hidden="true" class="text-gray-400 dark:text-gray-500">
                 @if ($sorted)
                     {{ $direction === 'asc' ? '↑' : '↓' }}
                 @else

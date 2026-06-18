@@ -18,8 +18,8 @@
     $selectAttributes = $attributes
         ->except(['wire:model', 'wire:model.live'])
         ->class([
-            'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500',
-            'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500' => ! $hasError,
+            'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800',
+            'border-gray-300 focus:border-accent focus:ring-accent dark:border-gray-600' => ! $hasError,
             'border-red-500 focus:border-red-500 focus:ring-red-500' => $hasError,
         ])
         ->merge([
@@ -35,7 +35,7 @@
 
 <div>
     @if ($label)
-        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-gray-700">
+        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
             {{ $label }}
         </label>
     @endif
@@ -58,11 +58,11 @@
     </select>
 
     @if ($hasError)
-        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-red-600">
+        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-red-600 dark:text-red-400">
             {{ $errors->first($model) }}
         </p>
     @elseif ($hint)
-        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-gray-500">
+        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {{ $hint }}
         </p>
     @endif

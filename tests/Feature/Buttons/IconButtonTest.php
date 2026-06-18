@@ -21,7 +21,7 @@ it('applies icon button variants and sizes', function (string $variant, string $
         ->toContain($expectedVariant)
         ->toContain($expectedSize);
 })->with([
-    'primary sm' => ['primary', 'sm', 'bg-indigo-600', 'h-8 w-8'],
+    'primary sm' => ['primary', 'sm', 'bg-accent', 'h-8 w-8'],
     'secondary md' => ['secondary', 'md', 'bg-gray-100', 'h-10 w-10'],
     'danger lg' => ['danger', 'lg', 'bg-red-600', 'h-12 w-12'],
 ]);

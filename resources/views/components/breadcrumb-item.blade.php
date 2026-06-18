@@ -6,16 +6,16 @@
 
 <li {{ $attributes->class(['flex items-center gap-2']) }}>
     @if ($href && ! $current)
-        <a href="{{ $href }}" class="font-medium text-gray-600 transition hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <a href="{{ $href }}" class="font-medium text-gray-600 transition hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-accent dark:text-gray-400 dark:hover:text-white">
             {{ $slot }}
         </a>
     @else
-        <span class="font-medium text-gray-950" @if ($current) aria-current="page" @endif>
+        <span class="font-medium text-gray-950 dark:text-gray-100" @if ($current) aria-current="page" @endif>
             {{ $slot }}
         </span>
     @endif
 
     @if (! $current)
-        <span aria-hidden="true" class="text-gray-300">/</span>
+        <span aria-hidden="true" class="text-gray-300 dark:text-gray-600">/</span>
     @endif
 </li>

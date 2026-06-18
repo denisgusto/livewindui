@@ -8,17 +8,18 @@
 
 @php
     $variantClasses = match ($variant) {
-        'success' => 'border-green-200 bg-green-50 text-green-800',
-        'warning' => 'border-yellow-200 bg-yellow-50 text-yellow-800',
-        'danger' => 'border-red-200 bg-red-50 text-red-800',
-        'info' => 'border-blue-200 bg-blue-50 text-blue-800',
-        default => 'border-blue-200 bg-blue-50 text-blue-800',
+        'success' => 'border-green-200 bg-green-50 text-green-800 dark:border-green-900/50 dark:bg-green-950 dark:text-green-200',
+        'warning' => 'border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950 dark:text-yellow-200',
+        'danger' => 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950 dark:text-red-200',
+        'info' => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950 dark:text-blue-200',
+        default => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950 dark:text-blue-200',
     };
 
     $role = in_array($variant, ['warning', 'danger'], true) ? 'alert' : 'status';
 @endphp
 
 <div
+    @if ($dismissible) x-data="{ show: true }" x-show="show" x-transition @endif
     {{ $attributes->class([
         'pointer-events-auto w-full max-w-sm rounded-md border p-4 shadow-lg',
         $variantClasses,
@@ -41,6 +42,7 @@
             <button
                 type="button"
                 class="-m-1.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md opacity-70 transition hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                x-on:click="show = false"
                 aria-label="Fechar notificacao"
             >
                 <span aria-hidden="true">&times;</span>

@@ -4,7 +4,7 @@
 ])
 
 <td {{ $attributes->class([
-    'px-4 text-sm text-gray-700',
+    'px-4 text-sm text-gray-700 dark:text-gray-300',
     $compact ? 'py-2' : 'py-4',
 ]) }}>
     {{ $slot }}

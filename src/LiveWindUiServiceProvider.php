@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LiveWindUi;
 
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use LiveWindUi\Components\Data\DataTable;
+use LiveWindUi\Facades\Livewind as LivewindFacade;
 
 class LiveWindUiServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,9 @@ class LiveWindUiServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/livewindui.php', 'livewindui');
+
+        $this->app->singleton('livewind', fn (): LiveWindUiManager => new LiveWindUiManager);
+        $this->app->alias('livewind', LiveWindUiManager::class);
     }
 
     /**
@@ -28,7 +33,18 @@ class LiveWindUiServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', $prefix);
 
         $this->registerBladeComponents($prefix);
+        $this->registerFacadeAlias();
         $this->registerPublishing();
+    }
+
+    /**
+     * Expose the `Livewind` facade alias globally (Livewind::toast(), Livewind::modal()).
+     */
+    protected function registerFacadeAlias(): void
+    {
+        if (class_exists(AliasLoader::class)) {
+            AliasLoader::getInstance()->alias('Livewind', LivewindFacade::class);
+        }
     }
 
     /**
@@ -60,6 +76,11 @@ class LiveWindUiServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/livewindui'),
         ], 'livewindui-views');
+
+        $this->publishes([
+            __DIR__.'/../resources/css/livewindui.css' => resource_path('css/livewindui.css'),
+            __DIR__.'/../tailwind.preset.js' => base_path('tailwind.preset.livewindui.js'),
+        ], 'livewindui-theme');
     }
 
     protected function componentPrefix(): string

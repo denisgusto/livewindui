@@ -1,12 +1,14 @@
 {{-- Modal: overlay acessivel com eventos globais, ESC, backdrop e trap focus. Props: name, maxWidth, closeable, show. Uso: <x-livewindui::modal name="confirm">...</x-livewindui::modal> --}}
 @props([
     'name' => 'default',
-    'maxWidth' => 'md',
+    'maxWidth' => null,
     'closeable' => true,
     'show' => false,
 ])
 
 @php
+    $maxWidth ??= config('livewindui.modal.max_width', 'md');
+
     $maxWidthClasses = match ($maxWidth) {
         'sm' => 'max-w-sm',
         'md' => 'max-w-md',
@@ -32,7 +34,7 @@
         },
     }"
     x-on:livewindui-modal-open.window="if ($event.detail.name === '{{ $name }}') open()"
-    x-on:livewindui-modal-close.window="if ($event.detail.name === '{{ $name }}') close()"
+    x-on:livewindui-modal-close.window="if (! $event.detail.name || $event.detail.name === '{{ $name }}') close()"
     @if ($closeable) x-on:keydown.escape.window="close()" @endif
     x-show="show"
     x-cloak
@@ -53,7 +55,7 @@
             x-transition
             x-trap.noscroll="show"
             {{ $attributes->class([
-                'w-full rounded-lg bg-white shadow-xl pointer-events-auto',
+                'w-full rounded-lg bg-white shadow-xl pointer-events-auto dark:bg-gray-900',
                 $maxWidthClasses,
             ]) }}
         >
@@ -61,7 +63,7 @@
                 <div class="flex justify-end px-4 pt-4">
                     <button
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-accent dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                         x-on:click="close()"
                         aria-label="Fechar modal"
                     >

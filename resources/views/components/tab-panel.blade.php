@@ -14,7 +14,7 @@
     aria-labelledby="{{ $tabId }}"
     x-show="active === @js($name)"
     x-cloak
-    {{ $attributes->class(['rounded-lg bg-white']) }}
+    {{ $attributes->class(['rounded-lg bg-white dark:bg-gray-900']) }}
 >
     {{ $slot }}
 </div>

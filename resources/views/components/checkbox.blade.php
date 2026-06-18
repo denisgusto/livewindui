@@ -16,7 +16,7 @@
     $checkboxAttributes = $attributes
         ->except(['wire:model'])
         ->class([
-            'peer h-4 w-4 rounded border-gray-300 text-indigo-600 transition focus:ring-indigo-500',
+            'peer h-4 w-4 rounded border-gray-300 text-accent transition focus:ring-accent dark:border-gray-600 dark:bg-gray-900',
             'border-red-500 focus:ring-red-500' => $hasError,
         ])
         ->merge([
@@ -38,13 +38,13 @@
 
         <span>
             @if ($label)
-                <span class="block text-sm font-medium text-gray-900 peer-checked:text-indigo-700">{{ $label }}</span>
+                <span class="block text-sm font-medium text-gray-900 peer-checked:text-accent-content dark:text-gray-100">{{ $label }}</span>
             @endif
 
             @if ($hasError)
-                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-red-600">{{ $errors->first($model) }}</span>
+                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-red-600 dark:text-red-400">{{ $errors->first($model) }}</span>
             @elseif ($description)
-                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-gray-500">{{ $description }}</span>
+                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-gray-500 dark:text-gray-400">{{ $description }}</span>
             @endif
         </span>
     </label>

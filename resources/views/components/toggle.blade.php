@@ -32,18 +32,18 @@
 >
     <div class="min-w-0">
         @if ($label)
-            <span class="block text-sm font-medium text-gray-900">{{ $label }}</span>
+            <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ $label }}</span>
         @endif
 
         @if ($description)
-            <span class="mt-1 block text-sm text-gray-500">{{ $description }}</span>
+            <span class="mt-1 block text-sm text-gray-500 dark:text-gray-400">{{ $description }}</span>
         @endif
     </div>
 
     <button
         type="button"
         role="switch"
-        class="peer relative inline-flex shrink-0 rounded-full bg-gray-200 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 aria-checked:bg-indigo-600 {{ $trackClasses }}"
+        class="peer relative inline-flex shrink-0 rounded-full bg-gray-200 transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 aria-checked:bg-accent dark:bg-gray-700 dark:focus:ring-offset-gray-900 {{ $trackClasses }}"
         x-on:click="checked = ! checked"
         x-on:keydown.enter.prevent="checked = ! checked"
         x-on:keydown.space.prevent="checked = ! checked"
