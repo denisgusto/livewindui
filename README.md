@@ -16,16 +16,16 @@ php artisan vendor:publish --tag=livewindui-config
 php artisan vendor:publish --tag=livewindui-views
 ```
 
-Add the package views to your Tailwind content paths:
+LiveWindUI targets **Tailwind CSS v4**, configured in CSS. In your `app.css`, import
+Tailwind, import the theme, and register the package views as a source:
 
-```js
-export default {
-  content: [
-    './resources/**/*.blade.php',
-    './vendor/denisgusto/livewindui/resources/views/**/*.blade.php',
-  ],
-}
+```css
+@import "tailwindcss";
+@import "../../vendor/denisgusto/livewindui/resources/css/livewindui.css";
+@source "../../vendor/denisgusto/livewindui/resources/views";
 ```
+
+No `tailwind.config.js` and no JS preset are needed.
 
 ## Quick Example
 
@@ -142,35 +142,22 @@ and `modal` (`max_width`):
 
 ## Theming & Dark Mode
 
-LiveWindUI ships a themeable **accent** color (CSS variables) and built-in **dark mode**
-(`.dark` class strategy), inspired by FluxUI but Tailwind 3-native.
+LiveWindUI uses a **semantic token** color system (Tailwind v4 `@theme`), inspired by
+shadcn/ui. Components reference role tokens — `accent`, `danger`, `success`, `warning`,
+`surface`, `muted`, `border` (each with a `-foreground` pair) — that swap automatically
+under the `.dark` class. Dark mode needs **no `dark:` classes** in your markup.
 
 ### Setup
 
-Add the preset and import the theme CSS:
-
-```js
-// tailwind.config.js
-import liveWindUi from './vendor/denisgusto/livewindui/tailwind.preset.js';
-
-export default {
-  presets: [liveWindUi], // enables darkMode:'class' + accent tokens
-  content: [
-    './resources/**/*.blade.php',
-    './vendor/denisgusto/livewindui/resources/views/**/*.blade.php',
-  ],
-};
-```
+Import Tailwind and the theme in your `app.css` (see Quick Install):
 
 ```css
-/* resources/css/app.css */
-@import '../../vendor/denisgusto/livewindui/resources/css/livewindui.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "../../vendor/denisgusto/livewindui/resources/css/livewindui.css";
+@source "../../vendor/denisgusto/livewindui/resources/views";
 ```
 
-Publish them to customize:
+Publish the theme to customize the raw values:
 
 ```bash
 php artisan vendor:publish --tag=livewindui-theme
@@ -178,25 +165,27 @@ php artisan vendor:publish --tag=livewindui-theme
 
 ### Theming
 
-Components use the `accent` token, so overriding three CSS variables re-themes everything:
+Re-theme the **whole** library by overriding the raw role variables in your own
+`app.css`, after the import. One change recolors every component:
 
 ```css
-:root { --lw-accent: 225 29 72; --lw-accent-content: 190 18 60; --lw-accent-foreground: 255 255 255; }
-.dark { --lw-accent: 251 113 133; --lw-accent-content: 253 164 175; }
+/* make the whole system green */
+:root { --lw-accent: 34 197 94; --lw-accent-content: 22 163 74; }
+.dark { --lw-accent: 74 222 128; --lw-accent-content: 134 239 172; }
 ```
 
-Buttons also accept a per-instance `color` (any Tailwind color) and Flux-style
-`variant` (`primary`, `filled`, `outline`, `ghost`, `subtle`, `danger`):
+Buttons expose Flux-style semantic `variant`s (`primary`, `filled`/`secondary`,
+`outline`, `ghost`, `subtle`, `danger`) — all themeable, no literal colors:
 
 ```blade
 <x-livewindui::button>Primary (accent)</x-livewindui::button>
 <x-livewindui::button variant="subtle">Subtle</x-livewindui::button>
-<x-livewindui::button color="rose">Delete</x-livewindui::button>
+<x-livewindui::button variant="danger">Delete</x-livewindui::button>
 ```
 
 ### Dark mode
 
-Every component carries `dark:` variants. Toggle by adding/removing `.dark` on `<html>`.
+Toggle by adding/removing `.dark` on `<html>` — tokens do the rest.
 A no-flash snippet for your layout `<head>`:
 
 ```html

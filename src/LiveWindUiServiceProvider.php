@@ -79,7 +79,6 @@ class LiveWindUiServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../resources/css/livewindui.css' => resource_path('css/livewindui.css'),
-            __DIR__.'/../tailwind.preset.js' => base_path('tailwind.preset.livewindui.js'),
         ], 'livewindui-theme');
     }
 

@@ -6,14 +6,14 @@ Contexto do projeto para o Claude Code. Leia este arquivo na primeira interaçã
 
 ## 1. Visão geral
 
-**LiveWindUI** é uma biblioteca de componentes Blade reativos para a TALL Stack (Tailwind CSS, Alpine.js, Laravel, Livewire), distribuída como pacote Composer (`denisgusto/livewindui`). O objetivo é entregar componentes pré-configurados com integração nativa ao Livewire 3, estilização via Tailwind 3 puro (sem plugins), interatividade local via Alpine 3 e **zero JavaScript próprio adicional**.
+**LiveWindUI** é uma biblioteca de componentes Blade reativos para a TALL Stack (Tailwind CSS, Alpine.js, Laravel, Livewire), distribuída como pacote Composer (`denisgusto/livewindui`). O objetivo é entregar componentes pré-configurados com integração nativa ao Livewire 3, estilização via Tailwind 4 puro (sem plugins), interatividade local via Alpine 3 e **zero JavaScript próprio adicional**.
 
 **Proposta de valor (não negociar):**
 
-1. Instalação via Composer + um único ajuste no `tailwind.config.js`. Nada mais.
+1. Instalação via Composer + dois `@import` no `app.css` (Tailwind 4 é configurado por CSS, não por `tailwind.config.js`). Nada mais.
 2. Reatividade Livewire pronta de fábrica (`wire:model`, `wire:click`, `wire:loading`, validação automática).
 3. API Blade enxuta: o componente mais simples renderiza com **uma única tag**. Customização incremental via atributos.
-4. Customização visual por classes Tailwind via `merge` de atributos. **Exceção (decidida em jun/2026):** theming e dark mode usam variáveis CSS e um preset Tailwind — ver §10.
+4. Customização visual por classes Tailwind via `merge` de atributos. **Exceção (decidida em jun/2026, revisada para Tailwind 4):** theming e dark mode usam tokens semânticos via `@theme inline` + variáveis CSS — ver §10.
 5. Composable: componentes complexos (DataTable) são compostos por componentes simples da própria biblioteca (Input, Select, Pagination).
 
 Este projeto é o artefato de uma monografia de pós-graduação. **Decisões arquiteturais e de design da API ficam com o desenvolvedor humano** — você (Claude Code) executa codificação a partir de especificações já decididas. Não invente componentes não solicitados.
@@ -28,7 +28,7 @@ Este projeto é o artefato de uma monografia de pós-graduação. **Decisões ar
 | Framework | Laravel | 10.x / 11.x / 12.x / 13.x |
 | Reatividade | Livewire | 3.5+ / 4.3+ |
 | JS client-side | Alpine.js | 3.x (carregado pelo Livewire) |
-| CSS | Tailwind CSS | 3.x (sem DaisyUI, sem plugins) |
+| CSS | Tailwind CSS | 4.x (sem DaisyUI, sem plugins; config via `@theme` no CSS) |
 | Testes | Pest PHP | 2.x + `livewire/livewire` test helpers |
 | Code style | Laravel Pint | versão atual (PSR-12) |
 
@@ -117,11 +117,18 @@ livewindui/
 - Classes PHP: PascalCase (`DataTable.php`).
 - Variantes (props): valores em snake_case ou kebab-case consistentes; defina e mantenha. Sugestão: kebab-case (`variant="primary-outline"`).
 
-### 4.4 CSS / Tailwind
+### 4.4 CSS / Tailwind (Tailwind 4)
 
-- **Um único CSS de tema** (`resources/css/livewindui.css`) com variáveis para o accent (claro/escuro). Fora dele, nenhum outro `.css` próprio. Ver §10.
+- **Um único CSS de tema** (`resources/css/livewindui.css`) que define os tokens via `@theme inline` + variáveis CSS (claro/escuro). Fora dele, nenhum outro `.css` próprio. Ver §10.
+- **Sem `tailwind.preset.js`.** Tailwind 4 é configurado por CSS (`@theme`), não por arquivo JS. Não recriar preset.
 - Não usar `@apply` em arquivos CSS da biblioteca.
-- Classes definidas nos templates devem usar apenas utilitários core do Tailwind 3 + os tokens do preset (`accent`, `accent-content`, `accent-foreground`) e variantes `dark:`. **Não** depender de plugins (DaisyUI, forms, typography).
+- **API semântica de cor (regra central):** nos templates use **sempre** os tokens semânticos — nunca cores literais do Tailwind (`bg-indigo-600`, `bg-gray-100`) para superfícies/estado:
+  - Marca/destaque: `bg-accent`, `text-accent-foreground`, `hover:bg-accent-content`.
+  - Estado: `danger`, `success`, `warning` (cada um com par `-foreground`).
+  - Neutros: `surface`/`surface-foreground` (fundo+texto base), `muted`/`muted-foreground` (superfície/ texto secundário), `border`.
+- **Não use classes `dark:` em componentes.** Os tokens neutros já trocam sob `.dark` (o `@theme inline` resolve isso). Escrever `dark:` é sinal de cor hardcoded — corrija para o token.
+- Opacidade nos tokens é válida e idiomática no v4 (`hover:bg-muted/80`, `bg-danger/90`) — resolvida via `color-mix`.
+- **Não** depender de plugins (DaisyUI, forms, typography).
 
 ### 4.5 JavaScript
 
@@ -143,14 +150,16 @@ livewindui/
 ])
 
 @php
-    $baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition focus:outline-none focus:ring-2';
+    // Variantes 100% semânticas, sobre os tokens da §10. NÃO use cores literais
+    // do Tailwind (bg-indigo-600) nem classes `dark:` — os tokens já trocam sob `.dark`.
+    $baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2';
     $variantClasses = match($variant) {
-        'primary' => 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500',
-        'secondary' => 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-400',
-        'danger' => 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-        'outline' => 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50',
-        'ghost' => 'text-gray-700 hover:bg-gray-100',
-        default => 'bg-indigo-600 text-white hover:bg-indigo-700',
+        'primary' => 'bg-accent text-accent-foreground hover:bg-accent-content focus-visible:outline-accent',
+        'secondary' => 'bg-muted text-surface-foreground hover:bg-muted/80 focus-visible:outline-muted-foreground',
+        'danger' => 'bg-danger text-danger-foreground hover:bg-danger/90 focus-visible:outline-danger',
+        'outline' => 'border border-border bg-surface text-surface-foreground hover:bg-muted',
+        'ghost' => 'text-surface-foreground hover:bg-muted',
+        default => 'bg-accent text-accent-foreground hover:bg-accent-content',
     };
     $sizeClasses = match($size) {
         'sm' => 'px-3 py-1.5 text-sm',
@@ -284,25 +293,61 @@ cd demo && npm run build && du -h public/build/assets/*.js
 
 ---
 
-## 10. Theming e Dark Mode (decisão de jun/2026)
+## 10. Theming e Dark Mode (Tailwind 4 — sistema semântico de tokens)
 
-Decisão do desenvolvedor humano: adotar theming + dark mode no estilo FluxUI, o que
-**flexibiliza** o antigo "sem CSS/variáveis próprias". Arquitetura:
+Decisão do desenvolvedor humano (jun/2026, revisada para Tailwind 4): theming + dark mode
+por **tokens semânticos**, estilo shadcn/ui. Sai o preset JS, entra `@theme` no CSS. A
+API de cor dos componentes é **só semântica** — `variant="primary|danger|..."` resolvendo
+para tokens; **não há prop de cor literal** (`color="indigo"` foi removida).
 
-- **`resources/css/livewindui.css`** — único CSS da lib. Define variáveis de accent
-  (canais RGB separados por espaço) em `:root` e `.dark`. Publicável via
-  `vendor:publish --tag=livewindui-theme`.
-- **`tailwind.preset.js`** — preset Tailwind: habilita `darkMode: 'class'` e expõe os
-  tokens `accent`, `accent-content`, `accent-foreground` ligados às variáveis. O
-  consumidor adiciona em `presets: [...]`.
-- **Componentes** usam `bg-accent`/`text-accent-foreground`/`hover:bg-accent-content`
-  para o destaque (tematizável) e variantes `dark:` para superfícies. Cores literais
-  do Tailwind só na paleta do prop `color` do Button/IconButton.
+### Arquitetura
+
+- **`resources/css/livewindui.css`** — único CSS da lib. Três blocos:
+  1. `@custom-variant dark (&:where(.dark, .dark *));` → dark mode por classe `.dark`
+     (o default do v4 é `prefers-color-scheme`).
+  2. Valores crus dos *roles* como variáveis (canais RGB) em `:root` e `.dark`. **É só
+     isto que o consumidor sobrescreve para re-tematizar tudo.**
+  3. `@theme inline { --color-accent: rgb(var(--lw-accent)); ... }` → expõe cada role
+     como token Tailwind. O `inline` é o que faz `bg-accent`, `border-border`, etc.
+     **seguirem o `.dark` automaticamente**.
+  - Publicável via `vendor:publish --tag=livewindui-theme`.
+- **Sem `tailwind.preset.js`.** Removido — não recriar.
+
+### Conjunto de tokens (todos tematizáveis, todos com par claro/escuro)
+
+| Categoria | Tokens |
+|---|---|
+| Marca/destaque | `accent`, `accent-content` (hover), `accent-foreground` |
+| Estado | `danger` + `danger-foreground`, `success` + `success-foreground`, `warning` + `warning-foreground` |
+| Neutros | `surface` + `surface-foreground`, `muted` + `muted-foreground`, `border` |
+
+### Regras ao editar/criar componentes
+
+- **Cor sempre via token semântico.** Fundo base → `bg-surface text-surface-foreground`;
+  superfície/hover neutro → `bg-muted` / `hover:bg-muted`; texto secundário →
+  `text-muted-foreground`; borda → `border-border`; destaque → `bg-accent ...`.
+- **Nunca** cores literais do Tailwind (`bg-gray-100`, `bg-indigo-600`) para superfícies/estado.
+- **Nunca** classes `dark:` — os tokens neutros já trocam sob `.dark`. Se você sentiu
+  necessidade de um `dark:`, é porque hardcodou uma cor; troque pelo token.
+- Hover/estados sutis usam opacidade no token (`hover:bg-muted/80`, `bg-danger/90`).
+- Componente de referência canônico: `resources/views/components/button.blade.php`.
+
+### Re-tematizar (consumidor)
+
+Basta sobrescrever os valores crus no próprio `app.css`, depois do `@import` da lib:
+
+```css
+:root { --lw-accent: 34 197 94; --lw-accent-content: 22 163 74; } /* sistema todo verde */
+.dark { --lw-accent: 74 222 128; --lw-accent-content: 134 239 172; }
+```
+
 - **`config('livewindui.theme.accent')`** — nome da cor padrão (informativo; a cor real
   vem das variáveis CSS).
-- **Dark mode** = estratégia de classe `.dark` no `<html>`. A lib só fornece os estilos;
-  o consumidor aplica a classe (a demo usa um script anti-flash + `window.LiveWindUIAppearance`).
-- **Regra ao editar componentes:** todo background/borda/texto neutro deve ter par `dark:`.
-  O accent não precisa de `dark:` (a variável já troca sob `.dark`).
+- **Dark mode** = classe `.dark` no `<html>`, aplicada pelo consumidor (a demo usa um
+  script anti-flash + `window.LiveWindUIAppearance`).
 
-Última atualização deste CLAUDE.md: jun/2026 — adicionado theming + dark mode (§10).
+> ⚠️ **Migração em andamento:** o Button já está 100% no sistema semântico. Os demais
+> componentes ainda contêm cores neutras literais + `dark:` (continuam funcionando no v4);
+> ao tocar em qualquer um deles, **migre-o para os tokens** seguindo o Button.
+
+Última atualização deste CLAUDE.md: jun/2026 — migração para Tailwind 4 + tokens semânticos (§10).

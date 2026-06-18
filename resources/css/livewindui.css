@@ -1,37 +1,43 @@
-/*
-| LiveWindUI — theming tokens
-|
-| CSS custom properties that drive the accent ("brand") color of the library.
-| Values are space-separated RGB channels so Tailwind can apply opacity through
-| the `<alpha-value>` placeholder (see tailwind.preset.js).
-|
-| Override these in your own app.css to re-theme the whole library, e.g.:
-|
-|   :root  { --lw-accent: 220 38 38; --lw-accent-content: 185 28 28; }
-|   .dark  { --lw-accent: 248 113 113; --lw-accent-content: 252 165 165; }
-|
-| Dark mode uses the `.dark` class strategy (darkMode: 'class').
-*/
+@import 'tailwindcss';
 
-:root {
-    /* indigo-600 / indigo-700 / white */
-    --lw-accent: 79 70 229;
-    --lw-accent-content: 67 56 202;
-    --lw-accent-foreground: 255 255 255;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /* Brand */
+    --color-accent: var(--color-indigo-600);
+    --color-accent-content: var(--color-indigo-700);
+    --color-accent-foreground: var(--color-white);
+
+    /* Status */
+    --color-danger: var(--color-red-600);
+    --color-danger-foreground: var(--color-white);
+    --color-success: var(--color-green-600);
+    --color-success-foreground: var(--color-white);
+    --color-warning: var(--color-amber-400);
+    --color-warning-foreground: var(--color-gray-900);
+
+    /* Surfaces */
+    --color-surface: var(--color-white);
+    --color-surface-foreground: var(--color-gray-900);
+    --color-muted: var(--color-gray-100);
+    --color-muted-foreground: var(--color-gray-500);
+    --color-border: var(--color-gray-200);
 }
 
-.dark {
-    /* indigo-500 / indigo-400 / white */
-    --lw-accent: 99 102 241;
-    --lw-accent-content: 129 140 248;
-    --lw-accent-foreground: 255 255 255;
-}
+@layer theme {
+    .dark {
+        --color-accent: var(--color-indigo-500);
+        --color-accent-content: var(--color-indigo-400);
+        --color-accent-foreground: var(--color-white);
 
-/* Smooth the light/dark hand-off without flashing. */
-.lw-theme-transition,
-.lw-theme-transition * {
-    transition:
-        background-color 150ms ease,
-        border-color 150ms ease,
-        color 150ms ease;
+        --color-danger: var(--color-red-500);
+        --color-success: var(--color-green-500);
+        --color-warning: var(--color-amber-500);
+
+        --color-surface: var(--color-gray-900);
+        --color-surface-foreground: var(--color-gray-100);
+        --color-muted: var(--color-gray-800);
+        --color-muted-foreground: var(--color-gray-400);
+        --color-border: var(--color-gray-700);
+    }
 }

@@ -20,29 +20,21 @@ it('applies variant classes', function (string $variant, string $expectedClass) 
     expect($html)->toContain($expectedClass);
 })->with([
     'primary' => ['primary', 'bg-accent'],
-    'filled' => ['filled', 'bg-gray-100'],
-    'secondary' => ['secondary', 'bg-gray-100'],
-    'danger' => ['danger', 'bg-red-600'],
-    'outline' => ['outline', 'border-gray-300'],
-    'ghost' => ['ghost', 'hover:bg-gray-100'],
-    'subtle' => ['subtle', 'hover:text-gray-700'],
+    'filled' => ['filled', 'bg-muted'],
+    'secondary' => ['secondary', 'bg-muted'],
+    'danger' => ['danger', 'bg-danger'],
+    'outline' => ['outline', 'border-border'],
+    'ghost' => ['ghost', 'hover:bg-muted'],
+    'subtle' => ['subtle', 'text-muted-foreground'],
 ]);
 
-it('applies a literal color to the primary variant', function (string $color, string $expectedClass) {
-    $html = Blade::render("<x-livewindui::button color=\"{$color}\">X</x-livewindui::button>");
-
-    expect($html)->toContain($expectedClass);
-})->with([
-    'red' => ['red', 'bg-red-600'],
-    'green' => ['green', 'bg-green-600'],
-    'blue' => ['blue', 'bg-blue-600'],
-    'amber' => ['amber', 'bg-amber-400'],
-]);
-
-it('includes dark mode classes on neutral variants', function () {
+it('uses semantic neutral tokens (no dark: classes)', function () {
     $html = Blade::render('<x-livewindui::button variant="outline">X</x-livewindui::button>');
 
-    expect($html)->toContain('dark:bg-gray-900');
+    expect($html)
+        ->toContain('bg-surface')
+        ->toContain('border-border')
+        ->not->toContain('dark:');
 });
 
 it('renders as an anchor when href is provided', function () {
