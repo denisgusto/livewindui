@@ -1,11 +1,11 @@
-{{-- TabPanel: painel associado a uma aba. Props: name. Uso: <x-livewindui::tab-panel name="profile">...</x-livewindui::tab-panel> --}}
+{{-- TabPanel: painel associado a uma aba. Props: name. Uso: <x-livewind::tab-panel name="profile">...</x-livewind::tab-panel> --}}
 @props([
     'name',
 ])
 
 @php
-    $tabId = 'livewindui-tab-'.preg_replace('/[^a-zA-Z0-9_-]+/', '-', (string) $name);
-    $panelId = 'livewindui-tab-panel-'.preg_replace('/[^a-zA-Z0-9_-]+/', '-', (string) $name);
+    $tabId = 'livewind-tab-'.preg_replace('/[^a-zA-Z0-9_-]+/', '-', (string) $name);
+    $panelId = 'livewind-tab-panel-'.preg_replace('/[^a-zA-Z0-9_-]+/', '-', (string) $name);
 @endphp
 
 <div
@@ -14,7 +14,7 @@
     aria-labelledby="{{ $tabId }}"
     x-show="active === @js($name)"
     x-cloak
-    {{ $attributes->class(['rounded-lg bg-white dark:bg-gray-900']) }}
+    {{ $attributes->class(['rounded-lg bg-surface']) }}
 >
     {{ $slot }}
 </div>

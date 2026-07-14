@@ -1,4 +1,4 @@
-{{-- Container: limita largura de secoes com padding responsivo. Props: size=sm|md|lg|xl|full. Uso: <x-livewindui::container size="lg">...</x-livewindui::container> --}}
+{{-- Container: limita largura de secoes com padding responsivo. Props: size=sm|md|lg|xl|full. Uso: <x-livewind::container size="lg">...</x-livewind::container> --}}
 @props([
     'size' => 'lg',
 ])

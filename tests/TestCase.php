@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LiveWindUi\Tests;
+namespace Livewind\Tests;
 
-use Livewind\LiveWindUiServiceProvider;
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
+use Livewind\LivewindServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -13,8 +15,12 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
+            // Auto-descobertos em apps reais; no Testbench precisam ser explicitos
+            // para que <x-livewind::button icon="..."> resolva os heroicons.
+            BladeIconsServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
             LivewireServiceProvider::class,
-            LiveWindUiServiceProvider::class,
+            LivewindServiceProvider::class,
         ];
     }
 

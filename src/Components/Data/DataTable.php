@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LiveWindUi\Components\Data;
+namespace Livewind\Components\Data;
 
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use Livewire\Component as LivewireComponent;
 
 /**
  * Renderiza uma tabela de dados reativa preparada para Livewire.
@@ -42,12 +43,52 @@ final class DataTable extends Component
      */
     public function render(): View
     {
-        return view('livewindui::components.data-table', [
+        return view('livewind::components.data-table', [
             'normalizedColumns' => $this->normalizedColumns(),
             'rowValue' => fn (mixed $row, string $key): mixed => $this->value($row, $key),
             'rowKey' => fn (mixed $row, int $index): string => $this->rowKey($row, $index),
             'isPaginator' => $this->isPaginator(),
+            // Chaves propositalmente distintas dos nomes de metodo publico
+            // (currentSort/currentSortDirection), que o Laravel tambem expoe como
+            // variaveis na view e sombreariam estes valores.
+            'activeSortKey' => $this->currentSort(),
+            'activeSortDir' => $this->currentSortDirection(),
         ]);
+    }
+
+    /**
+     * Coluna atualmente ordenada, lida da propriedade Livewire cujo nome foi
+     * informado em `$sortBy` (ex.: 'sortBy'). Retorna null fora de um contexto
+     * Livewire ou quando a propriedade nao existe.
+     */
+    public function currentSort(): ?string
+    {
+        $value = $this->livewireProperty($this->sortBy);
+
+        return $value === null ? null : (string) $value;
+    }
+
+    /**
+     * Direcao atual de ordenacao ('asc'|'desc'), lida da propriedade Livewire
+     * cujo nome foi informado em `$sortDirection`. Default 'asc'.
+     */
+    public function currentSortDirection(): string
+    {
+        return (string) ($this->livewireProperty($this->sortDirection) ?? 'asc');
+    }
+
+    /**
+     * Le o valor de uma propriedade do componente Livewire em execucao pelo nome.
+     */
+    private function livewireProperty(string $name): mixed
+    {
+        $component = app('livewire')->current();
+
+        if ($component instanceof LivewireComponent) {
+            return data_get($component, $name);
+        }
+
+        return null;
     }
 
     /**
@@ -91,7 +132,7 @@ final class DataTable extends Component
     {
         $id = $this->value($row, 'id') ?? $index;
 
-        return 'livewindui-row-'.$id;
+        return 'livewind-row-'.$id;
     }
 
     /**

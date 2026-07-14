@@ -1,4 +1,4 @@
-{{-- Radio: opcao unica com label clicavel, descricao, wire:model e erro automatico. Props: model, label, description, value. Uso: <x-livewindui::radio model="plan" value="pro" label="Pro" /> --}}
+{{-- Radio: opcao unica com label clicavel, descricao, wire:model e erro automatico. Props: model, label, description, value. Uso: <x-livewind::radio model="plan" value="pro" label="Pro" /> --}}
 @props([
     'model' => null,
     'label' => null,
@@ -9,15 +9,15 @@
 @php
     $errors = $errors ?? new Illuminate\Support\ViewErrorBag();
     $hasError = filled($model) && $errors->has($model);
-    $baseId = $attributes->get('id') ?? 'livewindui-radio-'.md5((string) ($model ?? $label ?? $value ?? 'field'));
+    $baseId = $attributes->get('id') ?? 'livewind-radio-'.md5((string) ($model ?? $label ?? $value ?? 'field'));
     $descriptionId = "{$baseId}-description";
     $wireModelAttribute = filled($model) ? 'wire:model' : null;
 
     $radioAttributes = $attributes
         ->except(['wire:model'])
         ->class([
-            'peer h-4 w-4 border-gray-300 text-accent transition focus:ring-accent dark:border-gray-600 dark:bg-gray-900',
-            'border-red-500 focus:ring-red-500' => $hasError,
+            'peer h-4 w-4 border-border text-accent transition focus:ring-accent',
+            'border-danger focus:ring-danger' => $hasError,
         ])
         ->merge([
             'id' => $baseId,
@@ -38,13 +38,13 @@
 
         <span>
             @if ($label)
-                <span class="block text-sm font-medium text-gray-900 peer-checked:text-accent-content dark:text-gray-100">{{ $label }}</span>
+                <span class="block text-sm font-medium text-surface-foreground peer-checked:text-accent-content">{{ $label }}</span>
             @endif
 
             @if ($hasError)
-                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-red-600 dark:text-red-400">{{ $errors->first($model) }}</span>
+                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-danger">{{ $errors->first($model) }}</span>
             @elseif ($description)
-                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-gray-500 dark:text-gray-400">{{ $description }}</span>
+                <span id="{{ $descriptionId }}" class="mt-1 block text-sm text-muted-foreground">{{ $description }}</span>
             @endif
         </span>
     </label>

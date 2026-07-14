@@ -8,26 +8,29 @@ use Livewire\Livewire;
 
 it('renders modal shell with event listeners and aria attributes', function () {
     $html = Blade::render(<<<'BLADE'
-        <x-livewindui::modal name="confirm-delete" max-width="sm">
+        <x-livewind::modal name="confirm-delete" max-width="sm" title="Confirmar exclusão?">
             <div class="p-6">
-                <h2 id="modal-title-confirm-delete">Confirmar exclusão?</h2>
+                <p>Esta ação não pode ser desfeita.</p>
             </div>
-        </x-livewindui::modal>
+        </x-livewind::modal>
     BLADE);
 
     expect($html)
         ->toContain('role="dialog"')
         ->toContain('aria-modal="true"')
         ->toContain('aria-labelledby="modal-title-confirm-delete"')
-        ->toContain("x-on:livewindui-modal-open.window=\"if (\$event.detail.name === 'confirm-delete') open()\"")
-        ->toContain("x-on:livewindui-modal-close.window=\"if (! \$event.detail.name || \$event.detail.name === 'confirm-delete') close()\"")
+        ->toContain('id="modal-title-confirm-delete"')
+        ->toContain('x-ref="panel"')
+        ->toContain('this.trigger?.focus()')
+        ->toContain('x-on:livewind-modal-open.window')
+        ->toContain('x-on:livewind-modal-close.window')
         ->toContain('x-on:keydown.escape.window="close()"')
         ->toContain('x-trap.noscroll="show"')
         ->toContain('max-w-sm');
 });
 
 it('supports initial show state and custom max width', function () {
-    $html = Blade::render('<x-livewindui::modal name="edit" max-width="2xl" :show="true">Editar</x-livewindui::modal>');
+    $html = Blade::render('<x-livewind::modal name="edit" max-width="2xl" :show="true">Editar</x-livewind::modal>');
 
     expect($html)
         ->toContain('show: true')
@@ -36,7 +39,7 @@ it('supports initial show state and custom max width', function () {
 });
 
 it('omits close controls when not closeable', function () {
-    $html = Blade::render('<x-livewindui::modal name="locked" :closeable="false">Bloqueado</x-livewindui::modal>');
+    $html = Blade::render('<x-livewind::modal name="locked" :closeable="false">Bloqueado</x-livewind::modal>');
 
     expect($html)
         ->not->toContain('x-on:keydown.escape.window="close()"')
@@ -45,18 +48,18 @@ it('omits close controls when not closeable', function () {
 });
 
 it('merges consumer classes on the panel', function () {
-    $html = Blade::render('<x-livewindui::modal name="custom" class="divide-y" data-test="modal">Conteudo</x-livewindui::modal>');
+    $html = Blade::render('<x-livewind::modal name="custom" class="divide-y" data-test="modal">Conteudo</x-livewind::modal>');
 
     expect($html)
         ->toContain('divide-y')
         ->toContain('data-test="modal"')
-        ->toContain('rounded-lg bg-white shadow-xl');
+        ->toContain('rounded-lg bg-surface text-surface-foreground shadow-xl');
 });
 
 it('falls back to the configured default max width', function () {
-    config(['livewindui.modal.max_width' => 'xl']);
+    config(['livewind.modal.max_width' => 'xl']);
 
-    $html = Blade::render('<x-livewindui::modal name="cfg">Conteudo</x-livewindui::modal>');
+    $html = Blade::render('<x-livewind::modal name="cfg">Conteudo</x-livewind::modal>');
 
     expect($html)->toContain('max-w-xl');
 });
@@ -64,26 +67,26 @@ it('falls back to the configured default max width', function () {
 it('dispatches modal open events from livewire', function () {
     Livewire::test(SprintTwoModalDispatcher::class)
         ->call('openConfirm')
-        ->assertDispatched('livewindui-modal-open');
+        ->assertDispatched('livewind-modal-open');
 });
 
 class SprintTwoModalDispatcher extends Component
 {
     public function openConfirm(): void
     {
-        $this->dispatch('livewindui-modal-open', name: 'confirm-delete');
+        $this->dispatch('livewind-modal-open', name: 'confirm-delete');
     }
 
     public function render(): string
     {
         return <<<'BLADE'
             <div>
-                <x-livewindui::button wire:click="openConfirm">Abrir</x-livewindui::button>
-                <x-livewindui::modal name="confirm-delete">
+                <x-livewind::button wire:click="openConfirm">Abrir</x-livewind::button>
+                <x-livewind::modal name="confirm-delete">
                     <div class="p-6">
                         <h2 id="modal-title-confirm-delete">Confirmar exclusão?</h2>
                     </div>
-                </x-livewindui::modal>
+                </x-livewind::modal>
             </div>
         BLADE;
     }

@@ -1,10 +1,10 @@
-{{-- TableCell: celula de tabela com padding padrao. Props: compact. Uso: <x-livewindui::table-cell>Valor</x-livewindui::table-cell> --}}
+{{-- TableCell: celula de tabela com padding padrao. Props: compact. Uso: <x-livewind::table-cell>Valor</x-livewind::table-cell> --}}
 @props([
     'compact' => false,
 ])
 
 <td {{ $attributes->class([
-    'px-4 text-sm text-gray-700 dark:text-gray-300',
+    'px-4 text-sm text-surface-foreground',
     $compact ? 'py-2' : 'py-4',
 ]) }}>
     {{ $slot }}

@@ -1,13 +1,14 @@
-{{-- Modal: overlay acessivel com eventos globais, ESC, backdrop e trap focus. Props: name, maxWidth, closeable, show. Uso: <x-livewindui::modal name="confirm">...</x-livewindui::modal> --}}
+{{-- Modal: overlay acessivel com eventos globais, ESC, backdrop e trap focus. Props: name, maxWidth, closeable, show. Uso: <x-livewind::modal name="confirm">...</x-livewind::modal> --}}
 @props([
     'name' => 'default',
     'maxWidth' => null,
     'closeable' => true,
     'show' => false,
+    'title' => null,
 ])
 
 @php
-    $maxWidth ??= config('livewindui.modal.max_width', 'md');
+    $maxWidth ??= config('livewind.modal.max_width', 'md');
 
     $maxWidthClasses = match ($maxWidth) {
         'sm' => 'max-w-sm',
@@ -24,23 +25,28 @@
 <div
     x-data="{
         show: @js($show),
+        trigger: null,
         open() {
+            this.trigger = document.activeElement;
             this.show = true;
             document.body.classList.add('overflow-hidden');
+            this.$nextTick(() => this.$refs.panel.focus());
         },
         close() {
             this.show = false;
             document.body.classList.remove('overflow-hidden');
+            this.$nextTick(() => this.trigger?.focus());
         },
     }"
-    x-on:livewindui-modal-open.window="if ($event.detail.name === '{{ $name }}') open()"
-    x-on:livewindui-modal-close.window="if (! $event.detail.name || $event.detail.name === '{{ $name }}') close()"
+    x-init="if (show) { document.body.classList.add('overflow-hidden'); $nextTick(() => $refs.panel.focus()) }"
+    x-on:livewind-modal-open.window="if ($event.detail.name === @js($name)) open()"
+    x-on:livewind-modal-close.window="if (! $event.detail.name || $event.detail.name === @js($name)) close()"
     @if ($closeable) x-on:keydown.escape.window="close()" @endif
     x-show="show"
     x-cloak
     role="dialog"
     aria-modal="true"
-    aria-labelledby="{{ $modalId }}"
+    @if ($title) aria-labelledby="{{ $modalId }}" @else aria-label="{{ str_replace(['-', '_'], ' ', ucfirst((string) $name)) }}" @endif
 >
     <div
         x-show="show"
@@ -54,16 +60,21 @@
             x-show="show"
             x-transition
             x-trap.noscroll="show"
+            x-ref="panel"
+            tabindex="-1"
             {{ $attributes->class([
-                'w-full rounded-lg bg-white shadow-xl pointer-events-auto dark:bg-gray-900',
+                'w-full rounded-lg bg-surface text-surface-foreground shadow-xl pointer-events-auto outline-none',
                 $maxWidthClasses,
             ]) }}
         >
+            @if ($title)
+                <h2 id="{{ $modalId }}" class="sr-only">{{ $title }}</h2>
+            @endif
             @if ($closeable)
                 <div class="flex justify-end px-4 pt-4">
                     <button
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-accent dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-surface-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                         x-on:click="close()"
                         aria-label="Fechar modal"
                     >

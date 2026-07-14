@@ -8,27 +8,27 @@ use Livewire\Component;
 use Livewire\Livewire;
 
 it('renders the toast container with window listeners', function () {
-    $html = Blade::render('<x-livewindui::toast />');
+    $html = Blade::render('<x-livewind::toast />');
 
     expect($html)
         ->toContain('x-data="{')
-        ->toContain("window.addEventListener('livewindui:toast.show'")
-        ->toContain("window.addEventListener('livewindui:toast'")
-        ->toContain('window.LiveWindUI.toast')
+        ->toContain("window.addEventListener('livewind:toast.show'")
+        ->toContain("window.addEventListener('livewind:toast'")
+        ->toContain('window.Livewind.toast')
         ->toContain('x-for="toast in toasts"')
         ->toContain('x-transition');
 });
 
 it('does not use the broken alpine dotted-event listener', function () {
-    $html = Blade::render('<x-livewindui::toast />');
+    $html = Blade::render('<x-livewind::toast />');
 
     expect($html)
-        ->not->toContain('x-on:livewindui:toast.show.window')
+        ->not->toContain('x-on:livewind:toast.show.window')
         ->not->toContain('x-on:livewire:init.window');
 });
 
 it('applies position and default duration props', function () {
-    $html = Blade::render('<x-livewindui::toast position="bottom-left" :duration="2500" />');
+    $html = Blade::render('<x-livewind::toast position="bottom-left" :duration="2500" />');
 
     expect($html)
         ->toContain('bottom-0 left-0 items-start')
@@ -36,7 +36,7 @@ it('applies position and default duration props', function () {
 });
 
 it('normalizes the supported payload shapes in the add method', function () {
-    $html = Blade::render('<x-livewindui::toast />');
+    $html = Blade::render('<x-livewind::toast />');
 
     expect($html)
         // string simples -> { message: raw }
@@ -51,7 +51,7 @@ it('normalizes the supported payload shapes in the add method', function () {
 });
 
 it('treats duration zero as a permanent toast', function () {
-    $html = Blade::render('<x-livewindui::toast />');
+    $html = Blade::render('<x-livewind::toast />');
 
     expect($html)
         ->toContain('if (! toast.duration || toast.duration <= 0) return;');
@@ -59,12 +59,12 @@ it('treats duration zero as a permanent toast', function () {
 
 it('falls back to config defaults for position, duration and max', function () {
     config([
-        'livewindui.toast.position' => 'bottom-left',
-        'livewindui.toast.duration' => 7000,
-        'livewindui.toast.max' => 2,
+        'livewind.toast.position' => 'bottom-left',
+        'livewind.toast.duration' => 7000,
+        'livewind.toast.max' => 2,
     ]);
 
-    $html = Blade::render('<x-livewindui::toast />');
+    $html = Blade::render('<x-livewind::toast />');
 
     expect($html)
         ->toContain('bottom-0 left-0 items-start')
@@ -73,7 +73,7 @@ it('falls back to config defaults for position, duration and max', function () {
 });
 
 it('dedupes identical toasts and caps the stack', function () {
-    $html = Blade::render('<x-livewindui::toast :max="3" />');
+    $html = Blade::render('<x-livewind::toast :max="3" />');
 
     expect($html)
         ->toContain('max: 3')
@@ -84,7 +84,7 @@ it('dedupes identical toasts and caps the stack', function () {
 it('seeds session-flashed toasts into the container', function () {
     app('livewind')->toast(message: 'Apos redirect', variant: 'info');
 
-    $html = Blade::render('<x-livewindui::toast />');
+    $html = Blade::render('<x-livewind::toast />');
 
     expect($html)
         ->toContain('Apos redirect')
@@ -92,7 +92,7 @@ it('seeds session-flashed toasts into the container', function () {
 });
 
 it('renders a static toast item with semantic role', function (string $variant, string $expectedClass, string $role) {
-    $html = Blade::render("<x-livewindui::toast-item variant=\"{$variant}\" title=\"Titulo\" message=\"Mensagem\" />");
+    $html = Blade::render("<x-livewind::toast-item variant=\"{$variant}\" title=\"Titulo\" message=\"Mensagem\" />");
 
     expect($html)
         ->toContain($expectedClass)
@@ -100,14 +100,14 @@ it('renders a static toast item with semantic role', function (string $variant, 
         ->toContain('Titulo')
         ->toContain('Mensagem');
 })->with([
-    'success' => ['success', 'bg-green-50', 'status'],
-    'info' => ['info', 'bg-blue-50', 'status'],
-    'warning' => ['warning', 'bg-yellow-50', 'alert'],
-    'danger' => ['danger', 'bg-red-50', 'alert'],
+    'success' => ['success', 'bg-success/10', 'status'],
+    'info' => ['info', 'bg-info/10', 'status'],
+    'warning' => ['warning', 'bg-warning/10', 'alert'],
+    'danger' => ['danger', 'bg-danger/10', 'alert'],
 ]);
 
 it('makes the standalone toast-item dismissible by default', function () {
-    $html = Blade::render('<x-livewindui::toast-item message="Fechavel" />');
+    $html = Blade::render('<x-livewind::toast-item message="Fechavel" />');
 
     expect($html)
         ->toContain('x-data="{ show: true }"')
@@ -115,7 +115,7 @@ it('makes the standalone toast-item dismissible by default', function () {
 });
 
 it('omits the dismiss button when not dismissible', function () {
-    $html = Blade::render('<x-livewindui::toast-item message="Fixo" :dismissible="false" />');
+    $html = Blade::render('<x-livewind::toast-item message="Fixo" :dismissible="false" />');
 
     expect($html)
         ->not->toContain('x-on:click="show = false"')
@@ -125,20 +125,20 @@ it('omits the dismiss button when not dismissible', function () {
 it('dispatches the legacy toast event from livewire', function () {
     Livewire::test(SprintTwoToastDispatcher::class)
         ->call('notifyLegacy')
-        ->assertDispatched('livewindui:toast.show');
+        ->assertDispatched('livewind:toast.show');
 });
 
 it('dispatches the new toast event through the trait', function () {
     Livewire::test(SprintTwoToastDispatcher::class)
         ->call('notify')
-        ->assertDispatched('livewindui:toast');
+        ->assertDispatched('livewind:toast');
 });
 
 it('passes message, title, variant and duration through the trait', function () {
     Livewire::test(SprintTwoToastDispatcher::class)
         ->call('notifyDetailed')
         ->assertDispatched(
-            'livewindui:toast',
+            'livewind:toast',
             variant: 'success',
             title: 'Sucesso',
             message: 'Contato salvo com sucesso!',
@@ -168,7 +168,7 @@ class SprintTwoToastDispatcher extends Component
     public function notifyLegacy(): void
     {
         $this->dispatch(
-            'livewindui:toast.show',
+            'livewind:toast.show',
             variant: 'success',
             message: 'Contato salvo com sucesso!',
             title: 'Sucesso',
@@ -179,8 +179,8 @@ class SprintTwoToastDispatcher extends Component
     {
         return <<<'BLADE'
             <div>
-                <x-livewindui::toast />
-                <x-livewindui::button wire:click="notify">Notificar</x-livewindui::button>
+                <x-livewind::toast />
+                <x-livewind::button wire:click="notify">Notificar</x-livewind::button>
             </div>
         BLADE;
     }

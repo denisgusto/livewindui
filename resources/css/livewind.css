@@ -2,22 +2,70 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-    --color-accent: var(--color-zinc-800);
-    --color-accent-content: var(--color-zinc-800);
-    --color-accent-foreground: var(--color-white);
+/* Evita "flash" de elementos com x-cloak antes de o Alpine inicializar
+   (usado por modal, dropdown e tab-panel). */
+[x-cloak] {
+    display: none !important;
 }
 
-@layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-zinc-800);
-    }
+:root {
+    color-scheme: light;
+    --lw-accent: 79 70 229;
+    --lw-accent-content: 67 56 202;
+    --lw-accent-foreground: 255 255 255;
+    --lw-surface: 255 255 255;
+    --lw-surface-foreground: 24 24 27;
+    --lw-muted: 244 244 245;
+    --lw-muted-foreground: 113 113 122;
+    --lw-border: 228 228 231;
+    --lw-danger: 220 38 38;
+    --lw-danger-foreground: 255 255 255;
+    --lw-success: 22 163 74;
+    --lw-success-foreground: 255 255 255;
+    --lw-warning: 202 138 4;
+    --lw-warning-foreground: 24 24 27;
+    --lw-info: 37 99 235;
+    --lw-info-foreground: 255 255 255;
 }
 
-:root { color-scheme: light; }
-.dark { color-scheme: dark; }
+.dark {
+    color-scheme: dark;
+    --lw-accent: 165 180 252;
+    --lw-accent-content: 199 210 254;
+    --lw-accent-foreground: 24 24 27;
+    --lw-surface: 24 24 27;
+    --lw-surface-foreground: 244 244 245;
+    --lw-muted: 39 39 42;
+    --lw-muted-foreground: 161 161 170;
+    --lw-border: 63 63 70;
+    --lw-danger: 248 113 113;
+    --lw-danger-foreground: 69 10 10;
+    --lw-success: 74 222 128;
+    --lw-success-foreground: 5 46 22;
+    --lw-warning: 250 204 21;
+    --lw-warning-foreground: 66 32 6;
+    --lw-info: 96 165 250;
+    --lw-info-foreground: 23 37 84;
+}
+
+@theme inline {
+    --color-accent: rgb(var(--lw-accent));
+    --color-accent-content: rgb(var(--lw-accent-content));
+    --color-accent-foreground: rgb(var(--lw-accent-foreground));
+    --color-surface: rgb(var(--lw-surface));
+    --color-surface-foreground: rgb(var(--lw-surface-foreground));
+    --color-muted: rgb(var(--lw-muted));
+    --color-muted-foreground: rgb(var(--lw-muted-foreground));
+    --color-border: rgb(var(--lw-border));
+    --color-danger: rgb(var(--lw-danger));
+    --color-danger-foreground: rgb(var(--lw-danger-foreground));
+    --color-success: rgb(var(--lw-success));
+    --color-success-foreground: rgb(var(--lw-success-foreground));
+    --color-warning: rgb(var(--lw-warning));
+    --color-warning-foreground: rgb(var(--lw-warning-foreground));
+    --color-info: rgb(var(--lw-info));
+    --color-info-foreground: rgb(var(--lw-info-foreground));
+}
 
 @source "../../src/Components/**/*.php";
 @source "../views/components/**/*.blade.php";

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Blade;
 
 it('renders with default props', function () {
-    $html = Blade::render('<x-livewindui::button>Salvar</x-livewindui::button>');
+    $html = Blade::render('<x-livewind::button>Salvar</x-livewind::button>');
 
     expect($html)
         ->toContain('<button')
@@ -14,8 +14,17 @@ it('renders with default props', function () {
         ->toContain('bg-accent');
 });
 
+it('renders a heroicon svg when the icon prop is set', function () {
+    // Depende de blade-ui-kit/blade-heroicons (declarado no composer.json).
+    $html = Blade::render('<x-livewind::button icon="pencil">Editar</x-livewind::button>');
+
+    expect($html)
+        ->toContain('<svg')
+        ->toContain('Editar');
+});
+
 it('applies variant classes', function (string $variant, string $expectedClass) {
-    $html = Blade::render("<x-livewindui::button variant=\"{$variant}\">X</x-livewindui::button>");
+    $html = Blade::render("<x-livewind::button variant=\"{$variant}\">X</x-livewind::button>");
 
     expect($html)->toContain($expectedClass);
 })->with([
@@ -29,7 +38,7 @@ it('applies variant classes', function (string $variant, string $expectedClass) 
 ]);
 
 it('uses semantic neutral tokens (no dark: classes)', function () {
-    $html = Blade::render('<x-livewindui::button variant="outline">X</x-livewindui::button>');
+    $html = Blade::render('<x-livewind::button variant="outline">X</x-livewind::button>');
 
     expect($html)
         ->toContain('bg-surface')
@@ -38,7 +47,7 @@ it('uses semantic neutral tokens (no dark: classes)', function () {
 });
 
 it('renders as an anchor when href is provided', function () {
-    $html = Blade::render('<x-livewindui::button href="/go">Ir</x-livewindui::button>');
+    $html = Blade::render('<x-livewind::button href="/go">Ir</x-livewind::button>');
 
     expect($html)
         ->toContain('<a')
@@ -47,7 +56,7 @@ it('renders as an anchor when href is provided', function () {
 });
 
 it('applies size classes', function (string $size, string $expectedClass) {
-    $html = Blade::render("<x-livewindui::button size=\"{$size}\">X</x-livewindui::button>");
+    $html = Blade::render("<x-livewind::button size=\"{$size}\">X</x-livewind::button>");
 
     expect($html)->toContain($expectedClass);
 })->with([
@@ -57,7 +66,7 @@ it('applies size classes', function (string $size, string $expectedClass) {
 ]);
 
 it('merges consumer classes and arbitrary attributes', function () {
-    $html = Blade::render('<x-livewindui::button class="w-full" id="save-button" data-test="button">Salvar</x-livewindui::button>');
+    $html = Blade::render('<x-livewind::button class="w-full" id="save-button" data-test="button">Salvar</x-livewind::button>');
 
     expect($html)
         ->toContain('w-full')
@@ -67,7 +76,7 @@ it('merges consumer classes and arbitrary attributes', function () {
 });
 
 it('renders livewire loading and confirm attributes', function () {
-    $html = Blade::render('<x-livewindui::button wire:click="save" loading="save" confirm="Tem certeza?">Salvar</x-livewindui::button>');
+    $html = Blade::render('<x-livewind::button wire:click="save" loading="save" confirm="Tem certeza?">Salvar</x-livewind::button>');
 
     expect($html)
         ->toContain('wire:click="save"')

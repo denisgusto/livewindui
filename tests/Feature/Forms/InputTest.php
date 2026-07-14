@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\Livewire;
 
 it('renders with label, hint and wire model', function () {
-    $html = Blade::render('<x-livewindui::input model="email" label="E-mail" hint="Use seu melhor e-mail." placeholder="voce@site.com" />');
+    $html = Blade::render('<x-livewind::input model="email" label="E-mail" hint="Use seu melhor e-mail." placeholder="voce@site.com" />');
 
     expect($html)
         ->toContain('<label')
@@ -19,7 +19,7 @@ it('renders with label, hint and wire model', function () {
 });
 
 it('supports live model binding', function () {
-    $html = Blade::render('<x-livewindui::input model="name" :model-live="true" />');
+    $html = Blade::render('<x-livewind::input model="name" :model-live="true" />');
 
     expect($html)
         ->toContain('wire:model.live="name"')
@@ -28,10 +28,10 @@ it('supports live model binding', function () {
 
 it('renders prefix and suffix slots', function () {
     $html = Blade::render(<<<'BLADE'
-        <x-livewindui::input model="amount" label="Valor">
+        <x-livewind::input model="amount" label="Valor">
             <x-slot:prefix>R$</x-slot:prefix>
             <x-slot:suffix>BRL</x-slot:suffix>
-        </x-livewindui::input>
+        </x-livewind::input>
     BLADE);
 
     expect($html)
@@ -42,11 +42,11 @@ it('renders prefix and suffix slots', function () {
 });
 
 it('merges consumer classes and arbitrary attributes', function () {
-    $html = Blade::render('<x-livewindui::input model="email" class="tracking-wide" data-test="input" />');
+    $html = Blade::render('<x-livewind::input model="email" class="tracking-wide" data-test="input" />');
 
     expect($html)
         ->toContain('tracking-wide')
-        ->toContain('border-gray-300')
+        ->toContain('border-border')
         ->toContain('data-test="input"');
 });
 
@@ -83,8 +83,8 @@ class SprintOneInputForm extends Component
     {
         return <<<'BLADE'
             <div>
-                <x-livewindui::input model="email" label="E-mail" hint="Informe seu e-mail." />
-                <x-livewindui::button wire:click="save" loading="save">Salvar</x-livewindui::button>
+                <x-livewind::input model="email" label="E-mail" hint="Informe seu e-mail." />
+                <x-livewind::button wire:click="save" loading="save">Salvar</x-livewind::button>
             </div>
         BLADE;
     }

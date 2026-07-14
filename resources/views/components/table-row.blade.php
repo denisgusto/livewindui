@@ -1,11 +1,11 @@
-{{-- TableRow: linha de tabela para head/body. Props: selected. Uso: <x-livewindui::table-row>...</x-livewindui::table-row> --}}
+{{-- TableRow: linha de tabela para head/body. Props: selected. Uso: <x-livewind::table-row>...</x-livewind::table-row> --}}
 @props([
     'selected' => false,
 ])
 
 <tr {{ $attributes->class([
     'transition',
-    'bg-accent/10 dark:bg-accent/20' => $selected,
+    'bg-accent/10' => $selected,
 ]) }}>
     {{ $slot }}
 </tr>

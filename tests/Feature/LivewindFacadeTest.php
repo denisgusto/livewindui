@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 use Livewind\Facades\Livewind;
-use Livewind\LiveWindUiManager;
+use Livewind\LivewindManager;
 use Livewire\Component;
 use Livewire\Livewire;
 
 it('resolves the manager from the container and facade', function () {
-    expect(app('livewind'))->toBeInstanceOf(LiveWindUiManager::class)
-        ->and(app(LiveWindUiManager::class))->toBeInstanceOf(LiveWindUiManager::class)
-        ->and(Livewind::getFacadeRoot())->toBeInstanceOf(LiveWindUiManager::class);
+    expect(app('livewind'))->toBeInstanceOf(LivewindManager::class)
+        ->and(app(LivewindManager::class))->toBeInstanceOf(LivewindManager::class)
+        ->and(Livewind::getFacadeRoot())->toBeInstanceOf(LivewindManager::class);
 });
 
 it('normalizes toast payloads with flux aliases', function () {
-    expect(LiveWindUiManager::normalizeToast(text: 'Corpo', heading: 'Titulo', variant: 'success'))
+    expect(LivewindManager::normalizeToast(text: 'Corpo', heading: 'Titulo', variant: 'success'))
         ->toBe([
             'variant' => 'success',
             'title' => 'Titulo',
@@ -23,7 +23,7 @@ it('normalizes toast payloads with flux aliases', function () {
 });
 
 it('keeps duration zero as a permanent toast in the payload', function () {
-    expect(LiveWindUiManager::normalizeToast(message: 'Fixo', duration: 0))
+    expect(LivewindManager::normalizeToast(message: 'Fixo', duration: 0))
         ->toHaveKey('duration', 0);
 });
 
@@ -31,7 +31,7 @@ it('dispatches a toast through the facade on the current component', function ()
     Livewire::test(LivewindFacadeHarness::class)
         ->call('fireToast')
         ->assertDispatched(
-            'livewindui:toast',
+            'livewind:toast',
             variant: 'success',
             title: 'Pronto',
             message: 'Salvo via facade',
@@ -41,19 +41,19 @@ it('dispatches a toast through the facade on the current component', function ()
 it('opens a named modal through the facade', function () {
     Livewire::test(LivewindFacadeHarness::class)
         ->call('openModal')
-        ->assertDispatched('livewindui-modal-open', name: 'confirm');
+        ->assertDispatched('livewind-modal-open', name: 'confirm');
 });
 
 it('closes all modals through the facade without a name', function () {
     Livewire::test(LivewindFacadeHarness::class)
         ->call('closeAllModals')
-        ->assertDispatched('livewindui-modal-close');
+        ->assertDispatched('livewind-modal-close');
 });
 
 it('dispatches variant helpers with the matching variant', function (string $method, string $variant) {
     Livewire::test(LivewindFacadeHarness::class)
         ->call('fireVariant', $method)
-        ->assertDispatched('livewindui:toast', variant: $variant);
+        ->assertDispatched('livewind:toast', variant: $variant);
 })->with([
     'success' => ['success', 'success'],
     'info' => ['info', 'info'],
@@ -82,7 +82,7 @@ it('accumulates multiple flashed toasts', function () {
 
 it('registers the global Livewind facade alias', function () {
     expect(class_exists('Livewind'))->toBeTrue()
-        ->and(\Livewind::getFacadeRoot())->toBeInstanceOf(LiveWindUiManager::class);
+        ->and(\Livewind::getFacadeRoot())->toBeInstanceOf(LivewindManager::class);
 });
 
 class LivewindFacadeHarness extends Component

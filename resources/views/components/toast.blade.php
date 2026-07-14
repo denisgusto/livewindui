@@ -1,4 +1,4 @@
-{{-- Toast: container global de notificacoes por evento Livewire/browser. Props: position, duration, max. Uso: <x-livewindui::toast /> --}}
+{{-- Toast: container global de notificacoes por evento Livewire/browser. Props: position, duration, max. Uso: <x-livewind::toast /> --}}
 @props([
     'position' => null,
     'duration' => null,
@@ -6,9 +6,9 @@
 ])
 
 @php
-    $position ??= config('livewindui.toast.position', 'top-right');
-    $duration ??= config('livewindui.toast.duration', 4000);
-    $max ??= config('livewindui.toast.max', 5);
+    $position ??= config('livewind.toast.position', 'top-right');
+    $duration ??= config('livewind.toast.duration', 4000);
+    $max ??= config('livewind.toast.max', 5);
 
     $positionClasses = match ($position) {
         'top-left' => 'top-0 left-0 items-start',
@@ -19,10 +19,10 @@
         default => 'top-0 right-0 items-end',
     };
 
-    $flashedToasts = \LiveWindUi\Facades\Livewind::flashedToasts();
+    $flashedToasts = \Livewind\Facades\Livewind::flashedToasts();
 @endphp
 
-@persist('livewindui-toasts')
+@persist('livewind-toasts')
 <div
     x-data="{
         toasts: [],
@@ -98,11 +98,11 @@
         },
     }"
     x-init="
-        window.addEventListener('livewindui:toast.show', (event) => add(event.detail));
-        window.addEventListener('livewindui:toast', (event) => add(event.detail));
-        window.LiveWindUI = window.LiveWindUI || {};
-        window.LiveWindUI.toast = (payload) => window.dispatchEvent(
-            new CustomEvent('livewindui:toast', { detail: typeof payload === 'string' ? { message: payload } : payload })
+        window.addEventListener('livewind:toast.show', (event) => add(event.detail));
+        window.addEventListener('livewind:toast', (event) => add(event.detail));
+        window.Livewind = window.Livewind || {};
+        window.Livewind.toast = (payload) => window.dispatchEvent(
+            new CustomEvent('livewind:toast', { detail: typeof payload === 'string' ? { message: payload } : payload })
         );
         @js($flashedToasts).forEach((flashed) => add(flashed));
     "
@@ -119,10 +119,10 @@
             x-on:mouseleave="resume(toast)"
             class="pointer-events-auto w-full max-w-sm rounded-md border p-4 shadow-lg"
             x-bind:class="{
-                'border-green-200 bg-green-50 text-green-800 dark:border-green-900/50 dark:bg-green-950 dark:text-green-200': toast.variant === 'success',
-                'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950 dark:text-blue-200': toast.variant === 'info',
-                'border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950 dark:text-yellow-200': toast.variant === 'warning',
-                'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950 dark:text-red-200': toast.variant === 'danger',
+                'border-success/30 bg-success/10 text-success': toast.variant === 'success',
+                'border-info/30 bg-info/10 text-info': toast.variant === 'info',
+                'border-warning/30 bg-warning/10 text-warning': toast.variant === 'warning',
+                'border-danger/30 bg-danger/10 text-danger': toast.variant === 'danger',
             }"
             x-bind:role="roleFor(toast.variant)"
         >

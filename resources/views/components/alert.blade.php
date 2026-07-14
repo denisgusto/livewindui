@@ -1,4 +1,4 @@
-{{-- Alert: feedback inline com variantes, titulo, dismiss e auto-dismiss. Props: variant, title, dismissible, autoDismiss. Uso: <x-livewindui::alert variant="success" title="Salvo">OK</x-livewindui::alert> --}}
+{{-- Alert: feedback inline com variantes, titulo, dismiss e auto-dismiss. Props: variant, title, dismissible, autoDismiss. Uso: <x-livewind::alert variant="success" title="Salvo">OK</x-livewind::alert> --}}
 @props([
     'variant' => 'info',
     'title' => null,
@@ -8,27 +8,27 @@
 
 @php
     $variantClasses = match ($variant) {
-        'success' => 'border-green-200 bg-green-50 text-green-800 dark:border-green-900/50 dark:bg-green-950/50 dark:text-green-200',
-        'warning' => 'border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950/50 dark:text-yellow-200',
-        'danger' => 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-200',
-        'info' => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/50 dark:text-blue-200',
-        default => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/50 dark:text-blue-200',
+        'success' => 'border-success/30 bg-success/10 text-success',
+        'warning' => 'border-warning/30 bg-warning/10 text-warning',
+        'danger' => 'border-danger/30 bg-danger/10 text-danger',
+        'info' => 'border-info/30 bg-info/10 text-info',
+        default => 'border-info/30 bg-info/10 text-info',
     };
 
     $titleClasses = match ($variant) {
-        'success' => 'text-green-900 dark:text-green-100',
-        'warning' => 'text-yellow-900 dark:text-yellow-100',
-        'danger' => 'text-red-900 dark:text-red-100',
-        'info' => 'text-blue-900 dark:text-blue-100',
-        default => 'text-blue-900 dark:text-blue-100',
+        'success' => 'text-success',
+        'warning' => 'text-warning',
+        'danger' => 'text-danger',
+        'info' => 'text-info',
+        default => 'text-info',
     };
 
     $bodyClasses = match ($variant) {
-        'success' => 'text-green-700 dark:text-green-300',
-        'warning' => 'text-yellow-700 dark:text-yellow-300',
-        'danger' => 'text-red-700 dark:text-red-300',
-        'info' => 'text-blue-700 dark:text-blue-300',
-        default => 'text-blue-700 dark:text-blue-300',
+        'success' => 'text-success',
+        'warning' => 'text-warning',
+        'danger' => 'text-danger',
+        'info' => 'text-info',
+        default => 'text-info',
     };
 
     $isInteractive = $dismissible || filled($autoDismiss);

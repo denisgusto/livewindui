@@ -1,4 +1,4 @@
-{{-- Textarea: area de texto com label, hint, contador, auto-resize, wire:model e erro automatico. Props: model, modelLive, label, hint, rows, maxLength, autoResize. Uso: <x-livewindui::textarea model="notes" :max-length="240" /> --}}
+{{-- Textarea: area de texto com label, hint, contador, auto-resize, wire:model e erro automatico. Props: model, modelLive, label, hint, rows, maxLength, autoResize. Uso: <x-livewind::textarea model="notes" :max-length="240" /> --}}
 @props([
     'model' => null,
     'modelLive' => false,
@@ -12,7 +12,7 @@
 @php
     $errors = $errors ?? new Illuminate\Support\ViewErrorBag();
     $hasError = filled($model) && $errors->has($model);
-    $baseId = $attributes->get('id') ?? 'livewindui-textarea-'.md5((string) ($model ?? $label ?? 'field'));
+    $baseId = $attributes->get('id') ?? 'livewind-textarea-'.md5((string) ($model ?? $label ?? 'field'));
     $descriptionId = "{$baseId}-description";
     $counterId = "{$baseId}-counter";
     $wireModelAttribute = filled($model) ? ($modelLive ? 'wire:model.live' : 'wire:model') : null;
@@ -25,9 +25,9 @@
     $textareaAttributes = $attributes
         ->except(['wire:model', 'wire:model.live'])
         ->class([
-            'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:disabled:bg-gray-800',
-            'border-gray-300 focus:border-accent focus:ring-accent dark:border-gray-600' => ! $hasError,
-            'border-red-500 focus:border-red-500 focus:ring-red-500' => $hasError,
+            'block w-full rounded-md border px-3 py-2 text-sm text-surface-foreground shadow-sm transition placeholder:text-muted-foreground focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground',
+            'border-border focus:border-accent focus:ring-accent' => ! $hasError,
+            'border-danger focus:border-danger focus:ring-danger' => $hasError,
         ])
         ->merge([
             'id' => $baseId,
@@ -46,7 +46,7 @@
 
 <div @if ($hasAlpineState) x-data="{ value: '' }" x-init="value = $refs.textarea.value" @endif>
     @if ($label)
-        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-surface-foreground">
             {{ $label }}
         </label>
     @endif
@@ -56,18 +56,18 @@
     <div class="mt-1 flex items-start justify-between gap-3">
         <div>
             @if ($hasError)
-                <p id="{{ $descriptionId }}" class="text-sm text-red-600 dark:text-red-400">
+                <p id="{{ $descriptionId }}" class="text-sm text-danger">
                     {{ $errors->first($model) }}
                 </p>
             @elseif ($hint)
-                <p id="{{ $descriptionId }}" class="text-sm text-gray-500 dark:text-gray-400">
+                <p id="{{ $descriptionId }}" class="text-sm text-muted-foreground">
                     {{ $hint }}
                 </p>
             @endif
         </div>
 
         @if ($maxLength)
-            <p id="{{ $counterId }}" class="text-xs text-gray-500 dark:text-gray-400">
+            <p id="{{ $counterId }}" class="text-xs text-muted-foreground">
                 <span x-text="value.length"></span>/{{ $maxLength }}
             </p>
         @endif

@@ -5,6 +5,12 @@
     $hasContent  = trim($slot) !== '';
     $isSquare    = $isSquare($hasContent);
     $showLoading = $shouldShowLoading($attributes);
+    $loadingTarget = $loadingTarget($attributes);
+    $confirm = $attributes->get('confirm');
+    $buttonAttributes = $attributes->except('confirm');
+    if ($confirm) {
+        $buttonAttributes = $buttonAttributes->merge(['wire:confirm' => $confirm]);
+    }
     $classes     = $classes() . ($isSquare ? ' aspect-square px-0 justify-center' : '');
 @endphp
 
@@ -13,7 +19,7 @@
     @if ($tag === 'button') type="{{ $type }}" @endif
     @if ($tooltip) title="{{ $tooltip }}" @endif
     data-lw-button
-    {{ $attributes->class($classes) }}
+    {{ $buttonAttributes->class($classes) }}
 >
     {{-- Leading icon --}}
     @if ($icon)
@@ -27,7 +33,7 @@
 
     {{-- Loading spinner replaces leading content during request --}}
     @if ($showLoading)
-        <span wire:loading class="contents">
+        <span wire:loading @if ($loadingTarget) wire:target="{{ $loadingTarget }}" @endif class="contents" aria-busy="true">
             <svg
                 class="{{ $iconSize() }} shrink-0 animate-spin"
                 xmlns="http://www.w3.org/2000/svg"

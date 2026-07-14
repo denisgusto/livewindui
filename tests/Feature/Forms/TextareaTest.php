@@ -7,7 +7,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 
 it('renders with label hint and wire model', function () {
-    $html = Blade::render('<x-livewindui::textarea model="notes" label="Observações" hint="Opcional" />');
+    $html = Blade::render('<x-livewind::textarea model="notes" label="Observações" hint="Opcional" />');
 
     expect($html)
         ->toContain('<textarea')
@@ -18,7 +18,7 @@ it('renders with label hint and wire model', function () {
 });
 
 it('renders max length counter', function () {
-    $html = Blade::render('<x-livewindui::textarea model="notes" :max-length="140" />');
+    $html = Blade::render('<x-livewind::textarea model="notes" :max-length="140" />');
 
     expect($html)
         ->toContain('maxlength="140"')
@@ -28,7 +28,7 @@ it('renders max length counter', function () {
 });
 
 it('renders auto resize behavior', function () {
-    $html = Blade::render('<x-livewindui::textarea model="notes" auto-resize />');
+    $html = Blade::render('<x-livewind::textarea model="notes" auto-resize />');
 
     expect($html)
         ->toContain('x-ref="textarea"')
@@ -37,11 +37,11 @@ it('renders auto resize behavior', function () {
 });
 
 it('merges consumer classes and attributes', function () {
-    $html = Blade::render('<x-livewindui::textarea model="notes" class="min-h-32" data-test="textarea" />');
+    $html = Blade::render('<x-livewind::textarea model="notes" class="min-h-32" data-test="textarea" />');
 
     expect($html)
         ->toContain('min-h-32')
-        ->toContain('border-gray-300')
+        ->toContain('border-border')
         ->toContain('data-test="textarea"');
 });
 
@@ -50,10 +50,10 @@ it('shows validation errors', function () {
     $errors->put('default', new MessageBag(['notes' => ['Observações são obrigatórias.']]));
     app('view')->share('errors', $errors);
 
-    $html = Blade::render('<x-livewindui::textarea model="notes" label="Observações" />');
+    $html = Blade::render('<x-livewind::textarea model="notes" label="Observações" />');
 
     expect($html)
         ->toContain('Observações são obrigatórias.')
-        ->toContain('border-red-500')
+        ->toContain('border-danger')
         ->toContain('aria-invalid="true"');
 });

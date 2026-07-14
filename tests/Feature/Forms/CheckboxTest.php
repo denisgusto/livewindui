@@ -7,7 +7,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 
 it('renders with label description and wire model', function () {
-    $html = Blade::render('<x-livewindui::checkbox model="accepted" label="Aceito" description="Termos de uso" />');
+    $html = Blade::render('<x-livewind::checkbox model="accepted" label="Aceito" description="Termos de uso" />');
 
     expect($html)
         ->toContain('type="checkbox"')
@@ -18,13 +18,13 @@ it('renders with label description and wire model', function () {
 });
 
 it('renders value for grouped checkboxes', function () {
-    $html = Blade::render('<x-livewindui::checkbox model="roles" value="admin" label="Admin" />');
+    $html = Blade::render('<x-livewind::checkbox model="roles" value="admin" label="Admin" />');
 
     expect($html)->toContain('value="admin"');
 });
 
 it('merges consumer classes and attributes', function () {
-    $html = Blade::render('<x-livewindui::checkbox model="accepted" class="rounded-sm" data-test="checkbox" />');
+    $html = Blade::render('<x-livewind::checkbox model="accepted" class="rounded-sm" data-test="checkbox" />');
 
     expect($html)
         ->toContain('rounded-sm')
@@ -36,10 +36,10 @@ it('shows validation errors', function () {
     $errors->put('default', new MessageBag(['accepted' => ['Você precisa aceitar os termos.']]));
     app('view')->share('errors', $errors);
 
-    $html = Blade::render('<x-livewindui::checkbox model="accepted" label="Aceito" />');
+    $html = Blade::render('<x-livewind::checkbox model="accepted" label="Aceito" />');
 
     expect($html)
         ->toContain('Você precisa aceitar os termos.')
-        ->toContain('border-red-500')
+        ->toContain('border-danger')
         ->toContain('aria-invalid="true"');
 });

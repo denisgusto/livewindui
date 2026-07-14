@@ -62,7 +62,7 @@ class DataTableFixture extends Component
 
         return Blade::render(<<<'BLADE'
             <div>
-                <x-livewindui::data-table
+                <x-livewind::data-table
                     :columns="[
                         ['key' => 'name', 'label' => 'Nome', 'sortable' => true],
                         ['key' => 'company', 'label' => 'Empresa', 'sortable' => true],
@@ -79,7 +79,7 @@ class DataTableFixture extends Component
                     <x-slot:actions>
                         <span>Editar</span>
                     </x-slot:actions>
-                </x-livewindui::data-table>
+                </x-livewind::data-table>
             </div>
         BLADE, [
             'paginator' => $paginator,
@@ -113,6 +113,24 @@ it('sorts rows using parent livewire method', function () {
         ->assertSeeInOrder(['Carla Rocha', 'Bruno Costa']);
 });
 
+it('shows the sort indicator for the current sorted column', function () {
+    // Le o valor real da propriedade Livewire ($sortBy/$sortDirection) via
+    // app('livewire')->current(), entao o indicador reflete o estado atual.
+    $component = Livewire::test(DataTableFixture::class);
+
+    // Estado inicial: sortBy='name', asc -> seta para cima e nao para baixo.
+    expect($component->html())
+        ->toContain('↑')
+        ->not->toContain('↓');
+
+    // Reordena a mesma coluna -> direcao vira desc -> seta para baixo.
+    $component->call('sortBy', 'name');
+
+    expect($component->html())
+        ->toContain('↓')
+        ->not->toContain('↑');
+});
+
 it('paginates rows through livewire', function () {
     Livewire::test(DataTableFixture::class)
         ->assertSee('Ana Martins')
@@ -122,14 +140,14 @@ it('paginates rows through livewire', function () {
 });
 
 it('renders row scoped cell and action partials', function () {
-    View::addNamespace('livewindui-tests', __DIR__.'/../../Fixtures/views');
+    View::addNamespace('livewind-tests', __DIR__.'/../../Fixtures/views');
 
     $html = Blade::render(<<<'BLADE'
-        <x-livewindui::data-table
+        <x-livewind::data-table
             :columns="$columns"
             :rows="$rows"
-            :cell-views="['active' => 'livewindui-tests::data-table.active-cell']"
-            actions-view="livewindui-tests::data-table.actions-cell"
+            :cell-views="['active' => 'livewind-tests::data-table.active-cell']"
+            actions-view="livewind-tests::data-table.actions-cell"
             :searchable="false"
         />
     BLADE, [

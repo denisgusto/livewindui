@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Blade;
 
 it('renders dropdown trigger menu and behavior', function () {
     $html = Blade::render(<<<'BLADE'
-        <x-livewindui::dropdown align="left" width="sm">
+        <x-livewind::dropdown align="left" width="sm">
             <x-slot:trigger>
                 <button type="button">Acoes</button>
             </x-slot:trigger>
 
-            <x-livewindui::dropdown-item wire:click="edit">Editar</x-livewindui::dropdown-item>
-            <x-livewindui::dropdown-item href="/contatos">Abrir</x-livewindui::dropdown-item>
-        </x-livewindui::dropdown>
+            <x-livewind::dropdown-item wire:click="edit">Editar</x-livewind::dropdown-item>
+            <x-livewind::dropdown-item href="/contatos">Abrir</x-livewind::dropdown-item>
+        </x-livewind::dropdown>
     BLADE);
 
     expect($html)

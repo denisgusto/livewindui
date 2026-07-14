@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Blade;
 
 it('renders breadcrumb navigation', function () {
     $html = Blade::render(<<<'BLADE'
-        <x-livewindui::breadcrumb>
-            <x-livewindui::breadcrumb-item href="/">Home</x-livewindui::breadcrumb-item>
-            <x-livewindui::breadcrumb-item current>Atual</x-livewindui::breadcrumb-item>
-        </x-livewindui::breadcrumb>
+        <x-livewind::breadcrumb>
+            <x-livewind::breadcrumb-item href="/">Home</x-livewind::breadcrumb-item>
+            <x-livewind::breadcrumb-item current>Atual</x-livewind::breadcrumb-item>
+        </x-livewind::breadcrumb>
     BLADE);
 
     expect($html)
@@ -21,7 +21,7 @@ it('renders breadcrumb navigation', function () {
 });
 
 it('merges breadcrumb attributes', function () {
-    $html = Blade::render('<x-livewindui::breadcrumb class="extra"><x-livewindui::breadcrumb-item current>X</x-livewindui::breadcrumb-item></x-livewindui::breadcrumb>');
+    $html = Blade::render('<x-livewind::breadcrumb class="extra"><x-livewind::breadcrumb-item current>X</x-livewind::breadcrumb-item></x-livewind::breadcrumb>');
 
     expect($html)->toContain('extra');
 });

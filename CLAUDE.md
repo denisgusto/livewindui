@@ -39,7 +39,7 @@ Este projeto é o artefato de uma monografia de pós-graduação. **Decisões ar
 ## 3. Estrutura de diretórios
 
 ```
-livewindui/
+livewind/
 ├── composer.json                  # define vendor/name, autoload PSR-4, dependências, auto-discovery
 ├── README.md                      # documentação de uso
 ├── CLAUDE.md                      # este arquivo
@@ -58,9 +58,9 @@ livewindui/
 │       ├── handle-attribute-merge.md
 │       └── setup-livewire-entangle.md
 ├── config/
-│   └── livewindui.php              # prefixo, defaults globais
+│   └── livewind.php              # prefixo, defaults globais
 ├── src/
-│   ├── LiveWindUiServiceProvider.php
+│   ├── LivewindServiceProvider.php
 │   ├── Components/                # classes PHP de componentes complexos (Anonymous quando possível)
 │   │   ├── Forms/
 │   │   ├── Buttons/
@@ -97,7 +97,7 @@ livewindui/
 ### 4.1 PHP
 
 - **PSR-12** obrigatório. Rode `vendor/bin/pint` antes de qualquer commit.
-- Namespaces: `LiveWindUi\` raiz para `src/`. Subnamespaces por categoria: `LiveWindUi\Components\Forms\Input`.
+- Namespaces: `Livewind\` raiz para `src/`. Subnamespaces por categoria: `Livewind\Components\Forms\Input`.
 - Tipagem estrita: sempre `declare(strict_types=1);` no topo dos arquivos PHP.
 - Properties e returns SEMPRE tipados.
 - Use `readonly` em props de componentes quando possível.
@@ -112,19 +112,19 @@ livewindui/
 
 ### 4.3 Nomeação
 
-- Prefixo de componentes: **`livewindui`** (configurável em `config/livewindui.php`). Consumo: `<x-livewindui::button />`.
+- Prefixo de componentes: **`livewind`** (configurável em `config/livewind.php`). Consumo: `<x-livewind::button />`.
 - Arquivos Blade: kebab-case (`data-table.blade.php`, `icon-button.blade.php`).
 - Classes PHP: PascalCase (`DataTable.php`).
 - Variantes (props): valores em snake_case ou kebab-case consistentes; defina e mantenha. Sugestão: kebab-case (`variant="primary-outline"`).
 
 ### 4.4 CSS / Tailwind (Tailwind 4)
 
-- **Um único CSS de tema** (`resources/css/livewindui.css`) que define os tokens via `@theme inline` + variáveis CSS (claro/escuro). Fora dele, nenhum outro `.css` próprio. Ver §10.
+- **Um único CSS de tema** (`resources/css/livewind.css`) que define os tokens via `@theme inline` + variáveis CSS (claro/escuro). Fora dele, nenhum outro `.css` próprio. Ver §10.
 - **Sem `tailwind.preset.js`.** Tailwind 4 é configurado por CSS (`@theme`), não por arquivo JS. Não recriar preset.
 - Não usar `@apply` em arquivos CSS da biblioteca.
 - **API semântica de cor (regra central):** nos templates use **sempre** os tokens semânticos — nunca cores literais do Tailwind (`bg-indigo-600`, `bg-gray-100`) para superfícies/estado:
   - Marca/destaque: `bg-accent`, `text-accent-foreground`, `hover:bg-accent-content`.
-  - Estado: `danger`, `success`, `warning` (cada um com par `-foreground`).
+  - Estado: `danger`, `success`, `warning`, `info` (cada um com par `-foreground`).
   - Neutros: `surface`/`surface-foreground` (fundo+texto base), `muted`/`muted-foreground` (superfície/ texto secundário), `border`.
 - **Não use classes `dark:` em componentes.** Os tokens neutros já trocam sob `.dark` (o `@theme inline` resolve isso). Escrever `dark:` é sinal de cor hardcoded — corrija para o token.
 - Opacidade nos tokens é válida e idiomática no v4 (`hover:bg-muted/80`, `bg-danger/90`) — resolvida via `color-mix`.
@@ -172,7 +172,7 @@ livewindui/
 <button {{ $attributes->class([$baseClasses, $variantClasses, $sizeClasses])->merge(['type' => 'button']) }}>
     @if($loading)
         <span wire:loading wire:target="{{ $loading }}" class="mr-2">
-            <x-livewindui::spinner size="sm" />
+            <x-livewind::spinner size="sm" />
         </span>
         <span wire:loading.remove wire:target="{{ $loading }}" class="contents">
             {{ $slot }}
@@ -198,7 +198,7 @@ Use classe PHP **só** quando há lógica que não cabe em `@php` no topo do Bla
 <?php
 declare(strict_types=1);
 
-namespace LiveWindUi\Components\Data;
+namespace Livewind\Components\Data;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -215,20 +215,20 @@ final class DataTable extends Component
 
     public function render(): View
     {
-        return view('livewindui::components.data-table');
+        return view('livewind::components.data-table');
     }
 }
 ```
 
 ### 5.3 Service Provider — registro de componentes
 
-Componentes são registrados no `boot()` do `LiveWindUiServiceProvider`. Use `Blade::componentNamespace()` para registrar tudo de uma vez com namespace `livewindui`:
+Componentes são registrados no `boot()` do `LivewindServiceProvider`. Use `Blade::componentNamespace()` para registrar tudo de uma vez com namespace `livewind`:
 
 ```php
-Blade::componentNamespace('LiveWindUi\\Components', 'livewindui');
+Blade::componentNamespace('Livewind\\Components', 'livewind');
 ```
 
-Componentes Blade anônimos em `resources/views/components/` são registrados via `Blade::anonymousComponentPath()` usando `config('livewindui.prefix', 'livewindui')`.
+Componentes Blade anônimos em `resources/views/components/` são registrados via `Blade::anonymousComponentPath()` usando `config('livewind.prefix', 'livewind')`.
 
 ---
 
@@ -273,13 +273,13 @@ cd demo && npm run build && du -h public/build/assets/*.js
 
 ## 8. Anti-padrões a evitar
 
-- ❌ Criar arquivos CSS (`.css`, `.scss`) próprios da biblioteca — **exceto** o único CSS de tema (`resources/css/livewindui.css`), ver §10.
+- ❌ Criar arquivos CSS (`.css`, `.scss`) próprios da biblioteca — **exceto** o único CSS de tema (`resources/css/livewind.css`), ver §10.
 - ❌ Adicionar dependências npm (a biblioteca tem zero `package.json`).
 - ❌ Usar `setTimeout` ou JS imperativo solto em templates. Use Alpine.
 - ❌ Hardcode de cores fora do sistema Tailwind (sem `#ff5733` direto, use `bg-red-500` ou `bg-[#ff5733]` se realmente necessário).
 - ❌ Esquecer `$attributes->class([...])->merge()` — quebra customização do consumidor.
 - ❌ Componentes que carregam dados sozinhos via Eloquent. O consumidor sempre fornece os dados via props.
-- ❌ Eventos Livewire com nomes genéricos. Use prefixo: `livewindui:toast.show`, `livewindui:modal.close`.
+- ❌ Eventos Livewire com nomes genéricos. Use prefixo: `livewind:toast.show`, `livewind:modal.close`.
 - ❌ Lógica de negócio dentro de componentes. Componentes são puramente apresentacionais.
 
 ---
@@ -302,7 +302,7 @@ para tokens; **não há prop de cor literal** (`color="indigo"` foi removida).
 
 ### Arquitetura
 
-- **`resources/css/livewindui.css`** — único CSS da lib. Três blocos:
+- **`resources/css/livewind.css`** — único CSS da lib. Três blocos:
   1. `@custom-variant dark (&:where(.dark, .dark *));` → dark mode por classe `.dark`
      (o default do v4 é `prefers-color-scheme`).
   2. Valores crus dos *roles* como variáveis (canais RGB) em `:root` e `.dark`. **É só
@@ -310,7 +310,7 @@ para tokens; **não há prop de cor literal** (`color="indigo"` foi removida).
   3. `@theme inline { --color-accent: rgb(var(--lw-accent)); ... }` → expõe cada role
      como token Tailwind. O `inline` é o que faz `bg-accent`, `border-border`, etc.
      **seguirem o `.dark` automaticamente**.
-  - Publicável via `vendor:publish --tag=livewindui-theme`.
+  - Publicável via `vendor:publish --tag=livewind-theme`.
 - **Sem `tailwind.preset.js`.** Removido — não recriar.
 
 ### Conjunto de tokens (todos tematizáveis, todos com par claro/escuro)
@@ -318,7 +318,7 @@ para tokens; **não há prop de cor literal** (`color="indigo"` foi removida).
 | Categoria | Tokens |
 |---|---|
 | Marca/destaque | `accent`, `accent-content` (hover), `accent-foreground` |
-| Estado | `danger` + `danger-foreground`, `success` + `success-foreground`, `warning` + `warning-foreground` |
+| Estado | `danger` + `danger-foreground`, `success` + `success-foreground`, `warning` + `warning-foreground`, `info` + `info-foreground` |
 | Neutros | `surface` + `surface-foreground`, `muted` + `muted-foreground`, `border` |
 
 ### Regras ao editar/criar componentes
@@ -341,7 +341,7 @@ Basta sobrescrever os valores crus no próprio `app.css`, depois do `@import` da
 .dark { --lw-accent: 74 222 128; --lw-accent-content: 134 239 172; }
 ```
 
-- **`config('livewindui.theme.accent')`** — nome da cor padrão (informativo; a cor real
+- **`config('livewind.theme.accent')`** — nome da cor padrão (informativo; a cor real
   vem das variáveis CSS).
 - **Dark mode** = classe `.dark` no `<html>`, aplicada pelo consumidor (a demo usa um
   script anti-flash + `window.LiveWindUIAppearance`).
@@ -350,4 +350,8 @@ Basta sobrescrever os valores crus no próprio `app.css`, depois do `@import` da
 > componentes ainda contêm cores neutras literais + `dark:` (continuam funcionando no v4);
 > ao tocar em qualquer um deles, **migre-o para os tokens** seguindo o Button.
 
-Última atualização deste CLAUDE.md: jun/2026 — migração para Tailwind 4 + tokens semânticos (§10).
+Última atualização deste CLAUDE.md: jul/2026 — `livewindui` passa a ser **apenas** o nome
+do pacote (`denisgusto/livewindui`); todo o resto (prefixo de componente `<x-livewind::…>`,
+chave de config `livewind`, CSS `resources/css/livewind.css`, eventos `livewind:…`, IDs,
+globais JS) usa `livewind`. Prop `color` do Button removida (API de cor 100% semântica) e
+token `info` documentado no §10. (jun/2026 — migração para Tailwind 4 + tokens semânticos.)

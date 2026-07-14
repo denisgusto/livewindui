@@ -1,11 +1,11 @@
-{{-- DropdownItem: item de menu como button ou link. Props: href, type. Uso: <x-livewindui::dropdown-item wire:click="edit">Editar</x-livewindui::dropdown-item> --}}
+{{-- DropdownItem: item de menu como button ou link. Props: href, type. Uso: <x-livewind::dropdown-item wire:click="edit">Editar</x-livewind::dropdown-item> --}}
 @props([
     'href' => null,
     'type' => 'button',
 ])
 
 @php
-    $classes = 'block w-full px-4 py-2 text-left text-sm text-gray-700 transition hover:bg-gray-100 hover:text-gray-950 focus:bg-gray-100 focus:outline-none dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700';
+    $classes = 'block w-full px-4 py-2 text-left text-sm text-surface-foreground transition hover:bg-muted hover:text-surface-foreground focus:bg-muted focus:outline-none';
 @endphp
 
 @if ($href)

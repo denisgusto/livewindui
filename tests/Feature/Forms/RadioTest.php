@@ -7,7 +7,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 
 it('renders with label description and wire model', function () {
-    $html = Blade::render('<x-livewindui::radio model="plan" value="pro" label="Pro" description="Plano avançado" />');
+    $html = Blade::render('<x-livewind::radio model="plan" value="pro" label="Pro" description="Plano avançado" />');
 
     expect($html)
         ->toContain('type="radio"')
@@ -18,7 +18,7 @@ it('renders with label description and wire model', function () {
 });
 
 it('merges consumer classes and attributes', function () {
-    $html = Blade::render('<x-livewindui::radio model="plan" value="free" class="border-indigo-500" data-test="radio" />');
+    $html = Blade::render('<x-livewind::radio model="plan" value="free" class="border-indigo-500" data-test="radio" />');
 
     expect($html)
         ->toContain('border-indigo-500')
@@ -30,10 +30,10 @@ it('shows validation errors', function () {
     $errors->put('default', new MessageBag(['plan' => ['Escolha um plano.']]));
     app('view')->share('errors', $errors);
 
-    $html = Blade::render('<x-livewindui::radio model="plan" value="pro" label="Pro" />');
+    $html = Blade::render('<x-livewind::radio model="plan" value="pro" label="Pro" />');
 
     expect($html)
         ->toContain('Escolha um plano.')
-        ->toContain('border-red-500')
+        ->toContain('border-danger')
         ->toContain('aria-invalid="true"');
 });

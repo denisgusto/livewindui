@@ -1,4 +1,4 @@
-{{-- Select: select nativo com options por array/objeto, slot customizado, wire:model e erro automatico. Props: model, modelLive, label, hint, placeholder, options. Uso: <x-livewindui::select model="category" :options="$options" /> --}}
+{{-- Select: select nativo com options por array/objeto, slot customizado, wire:model e erro automatico. Props: model, modelLive, label, hint, placeholder, options. Uso: <x-livewind::select model="category" :options="$options" /> --}}
 @props([
     'model' => null,
     'modelLive' => false,
@@ -11,16 +11,16 @@
 @php
     $errors = $errors ?? new Illuminate\Support\ViewErrorBag();
     $hasError = filled($model) && $errors->has($model);
-    $baseId = $attributes->get('id') ?? 'livewindui-select-'.md5((string) ($model ?? $label ?? 'field'));
+    $baseId = $attributes->get('id') ?? 'livewind-select-'.md5((string) ($model ?? $label ?? 'field'));
     $descriptionId = "{$baseId}-description";
     $wireModelAttribute = filled($model) ? ($modelLive ? 'wire:model.live' : 'wire:model') : null;
 
     $selectAttributes = $attributes
         ->except(['wire:model', 'wire:model.live'])
         ->class([
-            'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800',
-            'border-gray-300 focus:border-accent focus:ring-accent dark:border-gray-600' => ! $hasError,
-            'border-red-500 focus:border-red-500 focus:ring-red-500' => $hasError,
+            'block w-full rounded-md border px-3 py-2 text-sm text-surface-foreground shadow-sm transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground',
+            'border-border focus:border-accent focus:ring-accent' => ! $hasError,
+            'border-danger focus:border-danger focus:ring-danger' => $hasError,
         ])
         ->merge([
             'id' => $baseId,
@@ -35,7 +35,7 @@
 
 <div>
     @if ($label)
-        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-surface-foreground">
             {{ $label }}
         </label>
     @endif
@@ -58,11 +58,11 @@
     </select>
 
     @if ($hasError)
-        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-danger">
             {{ $errors->first($model) }}
         </p>
     @elseif ($hint)
-        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-muted-foreground">
             {{ $hint }}
         </p>
     @endif

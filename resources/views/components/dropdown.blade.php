@@ -1,4 +1,4 @@
-{{-- Dropdown: menu Alpine sem entangle, com trigger e itens. Props: align, width. Uso: <x-livewindui::dropdown><x-slot:trigger>...</x-slot:trigger>...</x-livewindui::dropdown> --}}
+{{-- Dropdown: menu Alpine sem entangle, com trigger e itens. Props: align, width. Uso: <x-livewind::dropdown><x-slot:trigger>...</x-slot:trigger>...</x-livewind::dropdown> --}}
 @props([
     'align' => 'right',
     'width' => 'md',
@@ -36,7 +36,7 @@
         x-cloak
         x-transition
         role="menu"
-        class="absolute z-50 mt-2 rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-gray-800 dark:ring-white/10 {{ $alignClasses }} {{ $widthClasses }}"
+        class="absolute z-50 mt-2 rounded-md bg-surface py-1 shadow-lg ring-1 ring-black/5 focus:outline-none {{ $alignClasses }} {{ $widthClasses }}"
     >
         {{ $slot }}
     </div>

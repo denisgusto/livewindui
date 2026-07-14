@@ -1,4 +1,4 @@
-{{-- Pagination: controles reativos para paginator Livewire/Laravel. Props: paginator, compact. Uso: <x-livewindui::pagination :paginator="$rows" /> --}}
+{{-- Pagination: controles reativos para paginator Livewire/Laravel. Props: paginator, compact. Uso: <x-livewind::pagination :paginator="$rows" /> --}}
 @props([
     'paginator' => null,
     'compact' => false,
@@ -21,11 +21,11 @@
     <nav
         role="navigation"
         aria-label="Paginacao"
-        {{ $attributes->class(['flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800']) }}
+        {{ $attributes->class(['flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between']) }}
     >
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-sm text-surface-foreground">
             @if ($firstItem && $lastItem)
-                Mostrando <span class="font-medium text-gray-900 dark:text-gray-100">{{ $firstItem }}</span>-<span class="font-medium text-gray-900 dark:text-gray-100">{{ $lastItem }}</span> de <span class="font-medium text-gray-900 dark:text-gray-100">{{ $total }}</span> resultados
+                Mostrando <span class="font-medium text-surface-foreground">{{ $firstItem }}</span>-<span class="font-medium text-surface-foreground">{{ $lastItem }}</span> de <span class="font-medium text-surface-foreground">{{ $total }}</span> resultados
             @else
                 {{ $total }} resultados
             @endif
@@ -34,7 +34,7 @@
         <div class="flex items-center gap-2">
             <button
                 type="button"
-                class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                class="rounded-md border border-border bg-surface px-3 py-2 text-sm font-medium text-surface-foreground transition hover:bg-muted focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-50"
                 wire:click="previousPage('{{ $pageName }}')"
                 @disabled($onFirstPage)
                 aria-label="Pagina anterior"
@@ -47,7 +47,7 @@
                     @foreach ($pages as $page)
                         <button
                             type="button"
-                            class="h-9 min-w-9 rounded-md px-3 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-accent {{ $page === $currentPage ? 'bg-accent text-accent-foreground' : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800' }}"
+                            class="h-9 min-w-9 rounded-md px-3 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-accent {{ $page === $currentPage ? 'bg-accent text-accent-foreground' : 'border border-border bg-surface text-surface-foreground hover:bg-muted' }}"
                             wire:click="gotoPage({{ $page }}, '{{ $pageName }}')"
                             aria-current="{{ $page === $currentPage ? 'page' : 'false' }}"
                         >
@@ -56,14 +56,14 @@
                     @endforeach
                 </div>
             @else
-                <span class="px-2 text-sm text-gray-600 dark:text-gray-400">
+                <span class="px-2 text-sm text-surface-foreground">
                     Pagina {{ $currentPage }} de {{ $lastPage }}
                 </span>
             @endif
 
             <button
                 type="button"
-                class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                class="rounded-md border border-border bg-surface px-3 py-2 text-sm font-medium text-surface-foreground transition hover:bg-muted focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-50"
                 wire:click="nextPage('{{ $pageName }}')"
                 @disabled(! $hasMorePages)
                 aria-label="Proxima pagina"

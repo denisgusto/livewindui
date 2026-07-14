@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Livewind;
+
+use Livewire\Component;
 
 class LivewindManager
 {
@@ -9,22 +13,84 @@ class LivewindManager
         // Boot logic for LivewindManager
     }
 
-    public function renderIcon(string $name, string $class = 'size-5', string $variant = 'mini'): string
-    {
-        // Resolve o arquivo SVG do ícone
-        $svgPath = __DIR__ . "/../resources/icons/{$variant}/{$name}.svg";
+    public static function normalizeToast(
+        string $message = '',
+        ?string $title = null,
+        string $variant = 'info',
+        ?int $duration = null,
+        ?string $text = null,
+        ?string $heading = null,
+    ): array {
+        $payload = [
+            'variant' => $variant === 'error' ? 'danger' : $variant,
+            'title' => $title ?? $heading,
+            'message' => $message !== '' ? $message : ($text ?? ''),
+        ];
 
-        if (! file_exists($svgPath)) {
-            return ''; // ou lança exception, ou um placeholder
+        if ($duration !== null) {
+            $payload['duration'] = $duration;
         }
 
-        $svg = file_get_contents($svgPath);
+        return $payload;
+    }
 
-        // Injeta a classe CSS no <svg>
-        return str_replace(
-            '<svg ',
-            '<svg class="' . e($class) . '" aria-hidden="true" ',
-            $svg
-        );
+    public function toast(
+        string $message = '',
+        ?string $title = null,
+        string $variant = 'info',
+        ?int $duration = null,
+        ?string $text = null,
+        ?string $heading = null,
+    ): void {
+        $payload = self::normalizeToast($message, $title, $variant, $duration, $text, $heading);
+        $component = app('livewire')->current();
+
+        if ($component instanceof Component) {
+            $component->dispatch('livewind:toast', ...$payload);
+
+            return;
+        }
+
+        session()->push('livewind.toasts', $payload);
+    }
+
+    public function success(string $message, ?string $title = null, ?int $duration = null): void
+    {
+        $this->toast($message, $title, 'success', $duration);
+    }
+
+    public function info(string $message, ?string $title = null, ?int $duration = null): void
+    {
+        $this->toast($message, $title, 'info', $duration);
+    }
+
+    public function warning(string $message, ?string $title = null, ?int $duration = null): void
+    {
+        $this->toast($message, $title, 'warning', $duration);
+    }
+
+    public function danger(string $message, ?string $title = null, ?int $duration = null): void
+    {
+        $this->toast($message, $title, 'danger', $duration);
+    }
+
+    public function error(string $message, ?string $title = null, ?int $duration = null): void
+    {
+        $this->danger($message, $title, $duration);
+    }
+
+    public function modal(string $name): ModalController
+    {
+        return new ModalController($name);
+    }
+
+    public function modals(): ModalController
+    {
+        return new ModalController;
+    }
+
+    public function flashedToasts(): array
+    {
+        return session()->get('livewind.toasts', []);
     }
 }

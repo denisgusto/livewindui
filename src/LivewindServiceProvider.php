@@ -8,6 +8,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
+use Livewind\Components\Data\DataTable;
 use Livewind\Livewind as LivewindFacade;
 
 class LivewindServiceProvider extends ServiceProvider
@@ -33,7 +34,6 @@ class LivewindServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerBladeComponents();
-        $this->registerBladeDirectives();
         $this->registerMacros();
         $this->registerPublishing();
         $this->registerCommands();
@@ -45,6 +45,7 @@ class LivewindServiceProvider extends ServiceProvider
     {
         $prefix = $this->componentPrefix();
         $this->loadViewsFrom($this->packageViewsPath(), 'livewind');
+        $this->loadViewsFrom($this->packageViewsPath(), $prefix);
 
         // 1º: override do consumidor (se existir) — vence se o arquivo for encontrado
         $userPath = resource_path("views/{$prefix}");
@@ -55,15 +56,7 @@ class LivewindServiceProvider extends ServiceProvider
         // 2º: anonymous components da lib (default)
         Blade::anonymousComponentPath($this->packageComponentsPath(), $prefix);
         Blade::componentNamespace('Livewind\\Components', $prefix);
-    }
-
-    protected function registerBladeDirectives(): void
-    {
-        Blade::directive(
-            'lwIcon',
-            fn($expr) =>
-            "<?php echo app('livewind')->renderIcon($expr); ?>"
-        );
+        Blade::component(DataTable::class, "{$prefix}::data-table");
     }
 
     protected function registerMacros(): void
@@ -71,6 +64,7 @@ class LivewindServiceProvider extends ServiceProvider
         ComponentAttributeBag::macro('pluck', function (string $key, mixed $default = null) {
             $value = $this->get($key, $default);
             unset($this->attributes[$key]);
+
             return $value;
         });
     }
@@ -112,22 +106,22 @@ class LivewindServiceProvider extends ServiceProvider
 
     protected function packageConfigPath(): string
     {
-        return __DIR__ . '/../config/' . 'livewind.php';
+        return __DIR__.'/../config/'.'livewind.php';
     }
 
     protected function packageViewsPath(): string
     {
-        return __DIR__ . '/../resources/views';
+        return __DIR__.'/../resources/views';
     }
 
     protected function packageComponentsPath(): string
     {
-        return __DIR__ . '/../resources/views/components';
+        return __DIR__.'/../resources/views/components';
     }
 
     protected function packageCssPath(): string
     {
-        return __DIR__ . '/../resources/css/' . 'livewind.css';
+        return __DIR__.'/../resources/css/livewind.css';
     }
 
     /* =====================================================================

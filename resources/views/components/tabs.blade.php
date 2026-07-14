@@ -1,4 +1,4 @@
-{{-- Tabs: estado de abas client-side ou Livewire server-side. Props: defaultTab, serverSide. Uso: <x-livewindui::tabs default-tab="profile">...</x-livewindui::tabs> --}}
+{{-- Tabs: estado de abas client-side ou Livewire server-side. Props: defaultTab, serverSide. Uso: <x-livewind::tabs default-tab="profile">...</x-livewind::tabs> --}}
 @props([
     'defaultTab' => 'default',
     'serverSide' => false,
@@ -11,9 +11,27 @@
 @endphp
 
 <div
-    x-data="{ active: {{ $activeState }} }"
-    x-on:keydown.arrow-right.prevent="$focus.wrap().next()"
-    x-on:keydown.arrow-left.prevent="$focus.wrap().previous()"
+    x-data="{
+        active: {{ $activeState }},
+        move(event) {
+            const tabs = [...this.$el.querySelectorAll('[role=tab]')];
+            const current = tabs.indexOf(event.target);
+            if (current < 0) return;
+
+            const target = event.key === 'Home'
+                ? tabs[0]
+                : event.key === 'End'
+                    ? tabs[tabs.length - 1]
+                    : tabs[(current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+
+            target.focus();
+            target.click();
+        },
+    }"
+    x-on:keydown.arrow-right.prevent="move($event)"
+    x-on:keydown.arrow-left.prevent="move($event)"
+    x-on:keydown.home.prevent="move($event)"
+    x-on:keydown.end.prevent="move($event)"
     {{ $attributes->class(['space-y-4']) }}
 >
     {{ $slot }}

@@ -13,7 +13,7 @@ it('renders a length aware paginator', function () {
         currentPage: 1,
     );
 
-    $html = Blade::render('<x-livewindui::pagination :paginator="$paginator" />', [
+    $html = Blade::render('<x-livewind::pagination :paginator="$paginator" />', [
         'paginator' => $paginator,
     ]);
 
@@ -35,7 +35,7 @@ it('renders compact pagination controls', function () {
         currentPage: 2,
     );
 
-    $html = Blade::render('<x-livewindui::pagination :paginator="$paginator" compact />', [
+    $html = Blade::render('<x-livewind::pagination :paginator="$paginator" compact />', [
         'paginator' => $paginator,
     ]);
 

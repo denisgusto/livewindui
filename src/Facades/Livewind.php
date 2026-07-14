@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Livewind;
+namespace Livewind\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see LivewindManager
- */
-class Livewind extends Facade
+final class Livewind extends Facade
 {
     protected static function getFacadeAccessor(): string
     {

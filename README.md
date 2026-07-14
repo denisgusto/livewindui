@@ -12,8 +12,8 @@ Blade components for Laravel Livewire, styled with Tailwind CSS and designed for
 
 ```bash
 composer require denisgusto/livewindui
-php artisan vendor:publish --tag=livewindui-config
-php artisan vendor:publish --tag=livewindui-views
+php artisan vendor:publish --tag=livewind-config
+php artisan vendor:publish --tag=livewind-views
 ```
 
 LiveWindUI targets **Tailwind CSS v4**, configured in CSS. In your `app.css`, import
@@ -21,7 +21,7 @@ Tailwind, import the theme, and register the package views as a source:
 
 ```css
 @import "tailwindcss";
-@import "../../vendor/denisgusto/livewindui/resources/css/livewindui.css";
+@import "../../vendor/denisgusto/livewindui/resources/css/livewind.css";
 @source "../../vendor/denisgusto/livewindui/resources/views";
 ```
 
@@ -41,18 +41,18 @@ Manual form markup:
 LiveWindUI:
 
 ```blade
-<x-livewindui::input model="email" label="E-mail" />
-<x-livewindui::button type="submit" loading="save">Save</x-livewindui::button>
+<x-livewind::input model="email" label="E-mail" />
+<x-livewind::button type="submit" loading="save">Save</x-livewind::button>
 ```
 
 Integrated table:
 
 ```blade
-<x-livewindui::data-table :columns="$columns" :rows="$contacts">
+<x-livewind::data-table :columns="$columns" :rows="$contacts">
     <x-slot:header>
-        <x-livewindui::button wire:click="openCreate">New contact</x-livewindui::button>
+        <x-livewind::button wire:click="openCreate">New contact</x-livewind::button>
     </x-slot:header>
-</x-livewindui::data-table>
+</x-livewind::data-table>
 ```
 
 ## Components
@@ -67,7 +67,7 @@ Integrated table:
 Every component is consumed with the configurable prefix:
 
 ```blade
-<x-livewindui::button>Save</x-livewindui::button>
+<x-livewind::button>Save</x-livewind::button>
 ```
 
 ## Toasts & Modals
@@ -81,7 +81,7 @@ Add the toast container once in your layout (it auto-stacks, auto-dismisses and
 survives `wire:navigate` via `@persist`):
 
 ```blade
-<x-livewindui::toast />
+<x-livewind::toast />
 ```
 
 ### The `Livewind` facade
@@ -153,14 +153,14 @@ Import Tailwind and the theme in your `app.css` (see Quick Install):
 
 ```css
 @import "tailwindcss";
-@import "../../vendor/denisgusto/livewindui/resources/css/livewindui.css";
+@import "../../vendor/denisgusto/livewindui/resources/css/livewind.css";
 @source "../../vendor/denisgusto/livewindui/resources/views";
 ```
 
 Publish the theme to customize the raw values:
 
 ```bash
-php artisan vendor:publish --tag=livewindui-theme
+php artisan vendor:publish --tag=livewind-theme
 ```
 
 ### Theming
@@ -178,9 +178,9 @@ Buttons expose Flux-style semantic `variant`s (`primary`, `filled`/`secondary`,
 `outline`, `ghost`, `subtle`, `danger`) — all themeable, no literal colors:
 
 ```blade
-<x-livewindui::button>Primary (accent)</x-livewindui::button>
-<x-livewindui::button variant="subtle">Subtle</x-livewindui::button>
-<x-livewindui::button variant="danger">Delete</x-livewindui::button>
+<x-livewind::button>Primary (accent)</x-livewind::button>
+<x-livewind::button variant="subtle">Subtle</x-livewind::button>
+<x-livewind::button variant="danger">Delete</x-livewind::button>
 ```
 
 ### Dark mode
@@ -208,13 +208,13 @@ A no-flash snippet for your layout `<head>`:
 - PHP 8.1+
 - Laravel 10, 11, 12 or 13
 - Livewire 3.5+ or 4.3+
-- Tailwind CSS 3+
+- Tailwind CSS 4+
 
 ## Publishing
 
 ```bash
-php artisan vendor:publish --tag=livewindui-config
-php artisan vendor:publish --tag=livewindui-views
+php artisan vendor:publish --tag=livewind-config
+php artisan vendor:publish --tag=livewind-views
 ```
 
 ## Development

@@ -1,4 +1,4 @@
-{{-- ToastItem: item estatico de toast com variante e role semantico. Props: variant, title, message, dismissible. Uso: <x-livewindui::toast-item variant="info" message="OK" /> --}}
+{{-- ToastItem: item estatico de toast com variante e role semantico. Props: variant, title, message, dismissible. Uso: <x-livewind::toast-item variant="info" message="OK" /> --}}
 @props([
     'variant' => 'info',
     'title' => null,
@@ -8,11 +8,11 @@
 
 @php
     $variantClasses = match ($variant) {
-        'success' => 'border-green-200 bg-green-50 text-green-800 dark:border-green-900/50 dark:bg-green-950 dark:text-green-200',
-        'warning' => 'border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950 dark:text-yellow-200',
-        'danger' => 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950 dark:text-red-200',
-        'info' => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950 dark:text-blue-200',
-        default => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950 dark:text-blue-200',
+        'success' => 'border-success/30 bg-success/10 text-success',
+        'warning' => 'border-warning/30 bg-warning/10 text-warning',
+        'danger' => 'border-danger/30 bg-danger/10 text-danger',
+        'info' => 'border-info/30 bg-info/10 text-info',
+        default => 'border-info/30 bg-info/10 text-info',
     };
 
     $role = in_array($variant, ['warning', 'danger'], true) ? 'alert' : 'status';
