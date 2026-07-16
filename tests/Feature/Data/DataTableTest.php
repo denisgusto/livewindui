@@ -89,7 +89,7 @@ class DataTableFixture extends Component
 
 it('renders columns rows search and action slot', function () {
     Livewire::test(DataTableFixture::class)
-        ->assertSee('Buscar')
+        ->assertSee('Search')
         ->assertSee('Nome')
         ->assertSee('Ana Martins')
         ->assertSee('Bruno Costa')

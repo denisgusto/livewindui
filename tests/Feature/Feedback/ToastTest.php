@@ -7,14 +7,12 @@ use Livewind\Concerns\InteractsWithToasts;
 use Livewire\Component;
 use Livewire\Livewire;
 
-it('renders the toast container with window listeners', function () {
+it('renders the toast container wired to the lwToast bundle component', function () {
     $html = Blade::render('<x-livewind::toast />');
 
+    // A logica agora vive no bundle (Alpine.data lwToast); o Blade so instancia + markup.
     expect($html)
-        ->toContain('x-data="{')
-        ->toContain("window.addEventListener('livewind:toast.show'")
-        ->toContain("window.addEventListener('livewind:toast'")
-        ->toContain('window.Livewind.toast')
+        ->toContain('x-data="lwToast(')
         ->toContain('x-for="toast in toasts"')
         ->toContain('x-transition');
 });
@@ -27,34 +25,12 @@ it('does not use the broken alpine dotted-event listener', function () {
         ->not->toContain('x-on:livewire:init.window');
 });
 
-it('applies position and default duration props', function () {
+it('passes position and duration config into lwToast', function () {
     $html = Blade::render('<x-livewind::toast position="bottom-left" :duration="2500" />');
 
     expect($html)
         ->toContain('bottom-0 left-0 items-start')
-        ->toContain('defaultDuration: 2500');
-});
-
-it('normalizes the supported payload shapes in the add method', function () {
-    $html = Blade::render('<x-livewind::toast />');
-
-    expect($html)
-        // string simples -> { message: raw }
-        ->toContain("typeof raw === 'string' ? { message: raw }")
-        // { message, title } e aliases { text, heading }
-        ->toContain('detail.title ?? detail.heading')
-        ->toContain('detail.message ?? detail.text')
-        // variant com default
-        ->toContain("detail.variant ?? 'info'")
-        // duration por toast com fallback no default
-        ->toContain('detail.duration !== undefined');
-});
-
-it('treats duration zero as a permanent toast', function () {
-    $html = Blade::render('<x-livewind::toast />');
-
-    expect($html)
-        ->toContain('if (! toast.duration || toast.duration <= 0) return;');
+        ->toContain('2500');
 });
 
 it('falls back to config defaults for position, duration and max', function () {
@@ -68,27 +44,15 @@ it('falls back to config defaults for position, duration and max', function () {
 
     expect($html)
         ->toContain('bottom-0 left-0 items-start')
-        ->toContain('defaultDuration: 7000')
-        ->toContain('max: 2');
+        ->toContain('7000');
 });
 
-it('dedupes identical toasts and caps the stack', function () {
-    $html = Blade::render('<x-livewind::toast :max="3" />');
-
-    expect($html)
-        ->toContain('max: 3')
-        ->toContain('const duplicate = this.toasts.find')
-        ->toContain('while (this.toasts.length > this.max)');
-});
-
-it('seeds session-flashed toasts into the container', function () {
+it('seeds session-flashed toasts into the container config', function () {
     app('livewind')->toast(message: 'Apos redirect', variant: 'info');
 
     $html = Blade::render('<x-livewind::toast />');
 
-    expect($html)
-        ->toContain('Apos redirect')
-        ->toContain('.forEach((flashed) => add(flashed))');
+    expect($html)->toContain('Apos redirect');
 });
 
 it('renders a static toast item with semantic role', function (string $variant, string $expectedClass, string $role) {
@@ -119,7 +83,7 @@ it('omits the dismiss button when not dismissible', function () {
 
     expect($html)
         ->not->toContain('x-on:click="show = false"')
-        ->not->toContain('aria-label="Fechar notificacao"');
+        ->not->toContain('aria-label="Close notification"');
 });
 
 it('dispatches the legacy toast event from livewire', function () {

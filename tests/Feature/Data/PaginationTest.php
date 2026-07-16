@@ -19,10 +19,10 @@ it('renders a length aware paginator', function () {
 
     expect($html)
         ->toContain('role="navigation"')
-        ->toContain('aria-label="Paginacao"')
-        ->toContain('Mostrando')
+        ->toContain('aria-label="Pagination"')
+        ->toContain('Showing')
         ->toContain('1</span>-<span')
-        ->toContain('30</span> resultados')
+        ->toContain('30</span> results')
         ->toContain('wire:click="previousPage')
         ->toContain('disabled');
 });
@@ -40,7 +40,7 @@ it('renders compact pagination controls', function () {
     ]);
 
     expect($html)
-        ->toContain('Pagina 2 de 3')
-        ->toContain('Anterior')
-        ->toContain('Proxima');
+        ->toContain('Page 2 of 3')
+        ->toContain('Previous')
+        ->toContain('Next');
 });

@@ -50,6 +50,18 @@ it('merges consumer classes and arbitrary attributes', function () {
         ->toContain('data-test="input"');
 });
 
+it('wires x-mask from the mask prop', function () {
+    $html = Blade::render('<x-livewind::input model="phone" mask="(99) 99999-9999" />');
+
+    expect($html)->toContain('x-mask="(99) 99999-9999"');
+});
+
+it('omits x-mask when no mask is given', function () {
+    $html = Blade::render('<x-livewind::input model="phone" />');
+
+    expect($html)->not->toContain('x-mask');
+});
+
 it('binds wire model in a livewire component', function () {
     Livewire::test(SprintOneInputForm::class)
         ->assertSee('wire:model="email"', escape: false)

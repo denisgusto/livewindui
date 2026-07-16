@@ -57,5 +57,36 @@ jobs:
       - name: Pint
         run: vendor/bin/pint --test
 
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=512M
+
       - name: Pest
         run: vendor/bin/pest
+
+  assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests (vitest)
+        run: npm test
+
+      - name: Build bundle
+        run: npm run build
+
+      - name: Ensure committed dist/ is up to date
+        run: git diff --exit-code -- dist/
+

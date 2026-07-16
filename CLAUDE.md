@@ -6,11 +6,11 @@ Contexto do projeto para o Claude Code. Leia este arquivo na primeira interaçã
 
 ## 1. Visão geral
 
-**LiveWindUI** é uma biblioteca de componentes Blade reativos para a TALL Stack (Tailwind CSS, Alpine.js, Laravel, Livewire), distribuída como pacote Composer (`denisgusto/livewindui`). O objetivo é entregar componentes pré-configurados com integração nativa ao Livewire 3, estilização via Tailwind 4 puro (sem plugins), interatividade local via Alpine 3 e **zero JavaScript próprio adicional**.
+**LiveWindUI** é uma biblioteca de componentes Blade reativos para a TALL Stack (Tailwind CSS, Alpine.js, Laravel, Livewire), distribuída como pacote Composer (`denisgusto/livewindui`). O objetivo é entregar componentes pré-configurados com integração nativa ao Livewire 3, estilização via Tailwind 4 puro (sem plugins) e interatividade via Alpine 3. Para JS, a lib segue o modelo **"bundle mínimo servido"** (decidido em jul/2026, revisando o "zero JS" original): componentes com **lógica de estado** (toast, calendar, signature) vivem num `Alpine.data()` dentro de `dist/livewind.js`, que é **servido por rota** e injetado por `@livewindScripts` — o consumidor **não roda npm**. O Alpine **trivial** (`x-show`, `open:false`) fica inline no Blade. Mais **plugins Alpine opcionais** que o app registra quando usa certos componentes (ver §4.5).
 
 **Proposta de valor (não negociar):**
 
-1. Instalação via Composer + dois `@import` no `app.css` (Tailwind 4 é configurado por CSS, não por `tailwind.config.js`). Nada mais.
+1. Instalação via Composer + dois `@import` no `app.css` + as diretivas de layout (`@livewindScripts`); `php artisan livewind:install` automatiza. Sem npm no lado do consumidor. Tailwind 4 é configurado por CSS, não por `tailwind.config.js`.
 2. Reatividade Livewire pronta de fábrica (`wire:model`, `wire:click`, `wire:loading`, validação automática).
 3. API Blade enxuta: o componente mais simples renderiza com **uma única tag**. Customização incremental via atributos.
 4. Customização visual por classes Tailwind via `merge` de atributos. **Exceção (decidida em jun/2026, revisada para Tailwind 4):** theming e dark mode usam tokens semânticos via `@theme inline` + variáveis CSS — ver §10.
@@ -58,25 +58,26 @@ livewind/
 │       ├── handle-attribute-merge.md
 │       └── setup-livewire-entangle.md
 ├── config/
-│   └── livewind.php              # prefixo, defaults globais
+│   └── livewind.php               # prefixo, defaults globais
+├── lang/                          # i18n (EN default + pt_BR): ui.php, datatable.php, pagination.php
+│   ├── en/
+│   └── pt_BR/
+├── js/                            # fonte do bundle (Vite)
+│   ├── index.js                   # registra Alpine.data() no alpine:init
+│   └── components/                # toast.js (+ toast.test.js), calendar.js, signature.js…
+├── dist/                          # bundle buildado e COMMITADO (livewind.js), servido por rota
 ├── src/
 │   ├── LivewindServiceProvider.php
-│   ├── Components/                # classes PHP de componentes complexos (Anonymous quando possível)
-│   │   ├── Forms/
-│   │   ├── Buttons/
-│   │   ├── Feedback/
-│   │   ├── Overlay/
-│   │   ├── Data/
-│   │   ├── Navigation/
-│   │   └── Layout/
-│   └── Support/                   # helpers internos (não componentes)
+│   ├── Console/                   # InstallCommand (livewind:install)
+│   ├── Components/                # colocation: uma pasta por componente (class + view)
+│   │   ├── Badge/                 #   Badge.php + badge.blade.php
+│   │   ├── Tabs/                  #   Tabs.php + Tab.php + tab.blade.php + tab-list.blade.php…
+│   │   └── …                      #   (Alert, Button, DataTable, Input, Modal, Toast, …)
+│   ├── Concerns/                  # traits de API pública (InteractsWithToasts)
+│   └── Facades/                   # Livewind facade
 ├── resources/
-│   └── views/
-│       └── components/            # templates Blade dos componentes
-│           ├── button.blade.php
-│           ├── input.blade.php
-│           ├── ...
-│           └── data-table.blade.php
+│   ├── css/livewind.css           # tema (tokens @theme) + @source dos src/Components
+│   └── views/runtime/             # partials das diretivas (@livewindScripts, @livewindAppearance)
 ├── tests/
 │   ├── Pest.php
 │   ├── TestCase.php               # estende Orchestra Testbench
@@ -88,7 +89,17 @@ livewind/
 
 ```
 
-**Regra:** se o componente é simples (sem lógica PHP), use **Blade anônimo** (apenas `.blade.php` em `resources/views/components/`). Se exige preparação de dados, defaults computados ou métodos de view, use componente com classe PHP em `src/Components/<Categoria>/<Nome>.php` estendendo `Illuminate\View\Component`.
+**Regra (jul/2026 — colocation + class-per-component):** cada componente vive numa
+pasta própria em `src/Components/<Studly>/`, com **classe PHP + view Blade colocadas**:
+`src/Components/Badge/Badge.php` + `src/Components/Badge/badge.blade.php`. **Todo
+componente tem classe** (estende `Illuminate\View\Component`), inclusive os triviais.
+Sub-componentes de uma família ficam na pasta do pai (ex.: `Tabs/Tabs.php`, `Tabs/Tab.php`,
+`Tabs/tab.blade.php`, `Tabs/tab-list.blade.php`…). O registro é automático via
+`LivewindServiceProvider::registerColocatedComponents()` (varre `src/Components/*/`,
+registra cada classe como `<prefix>::<kebab>` e coloca as views no namespace `livewind::`).
+A classe pode conter a lógica em métodos (padrão do `Badge`/`Input`) ou deixar variantes
+presentacionais simples num `@php` da própria view colocada — o que não muda é: **props no
+construtor da classe** (sem `@props([...])` na view de componente de classe).
 
 ---
 
@@ -130,10 +141,23 @@ livewind/
 - Opacidade nos tokens é válida e idiomática no v4 (`hover:bg-muted/80`, `bg-danger/90`) — resolvida via `color-mix`.
 - **Não** depender de plugins (DaisyUI, forms, typography).
 
-### 4.5 JavaScript
+### 4.5 JavaScript — modelo "bundle mínimo servido"
 
-- **Zero JS próprio** da biblioteca. Toda interatividade local é via Alpine.js (`x-data`, `x-show`, `x-transition`, etc.) escrita inline nos templates Blade.
+- **Um paradigma, dois lugares:** Alpine **trivial** (estado simples: `x-show`, `x-data="{ open:false }"`, transições) fica **inline** no Blade; lógica **com estado/algoritmo** (toast, calendar, signature) vira `Alpine.data('lw…')` em `js/components/*.js` e é registrada no `js/index.js` (`alpine:init`).
+- **Toolchain:** `package.json` + Vite (build IIFE → `dist/livewind.js`) + eslint + vitest. `dist/livewind.js` é **commitado** (o CI valida via `git diff`) e **servido por rota** (`/livewind/livewind.js`, ver `registerAssetRoute`), injetado por `@livewindScripts`. O consumidor **não roda npm**.
+- **Regra ao adicionar JS:** se é estado trivial → inline no Blade. Se tem timer/fila/canvas/teclado/algoritmo → `Alpine.data()` no bundle, **com teste vitest**. Nunca crescer string Blade além de ~30–40 linhas de lógica.
 - Para sincronização com Livewire em overlays (Modal, Dropdown), use `@entangle()` — ver skill `setup-livewire-entangle.md`.
+- **Plugins Alpine opcionais.** Alguns componentes usam diretivas que vivem em plugins Alpine *não embutidos* no Livewire. O **app do consumidor** registra o plugin só se usar o componente/prop:
+
+  | Componente / prop | Diretiva | Plugin a registrar |
+  |---|---|---|
+  | `<x-livewind::input mask="…">` | `x-mask` | `@alpinejs/mask` |
+  | `<x-livewind::modal>` (focus trap) | `x-trap` | `@alpinejs/focus` |
+
+  Ao adicionar um componente que dependa de um novo plugin Alpine, **atualize esta tabela e a do README**. O resto roda no core do Alpine do Livewire, sem setup extra.
+- **Diretivas de runtime:** o consumidor adiciona no layout, igual `@livewindAppearance`/`@livewindScripts`. Partials em `resources/views/runtime/`, registradas em `LivewindServiceProvider::registerBladeDirectives()`:
+  - `@livewindScripts` (antes de `</body>`) → injeta o bundle servido (`dist/livewind.js`) + monta o container global de toast (`<x-livewind::toast />`).
+  - `@livewindAppearance` (no `<head>`) → script anti-flash de dark mode; **opcional e intrusivo** (controla o `.dark` da página inteira). **Nunca tratar como obrigatório** — em app existente, sem ele a lib fica neutra (light até existir `.dark`). Ao criar um novo pedaço de runtime global, prefira estender `@livewindScripts` a pedir mais uma tag manual no layout.
 
 ---
 

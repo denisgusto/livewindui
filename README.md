@@ -6,14 +6,15 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](#development)
 
-Blade components for Laravel Livewire, styled with Tailwind CSS and designed for zero custom JavaScript in the package.
+Blade components for Laravel Livewire, styled with Tailwind CSS. Stateful interactivity
+ships in a **tiny served JS bundle** (no npm on your side); trivial interactivity is inline
+Alpine over the Alpine that Livewire already bundles.
 
 ## Quick Install
 
 ```bash
 composer require denisgusto/livewindui
-php artisan vendor:publish --tag=livewind-config
-php artisan vendor:publish --tag=livewind-views
+php artisan livewind:install   # publishes theme/config + wires the Tailwind imports
 ```
 
 LiveWindUI targets **Tailwind CSS v4**, configured in CSS. In your `app.css`, import
@@ -22,10 +23,69 @@ Tailwind, import the theme, and register the package views as a source:
 ```css
 @import "tailwindcss";
 @import "../../vendor/denisgusto/livewindui/resources/css/livewind.css";
-@source "../../vendor/denisgusto/livewindui/resources/views";
+@source "../../vendor/denisgusto/livewindui/src/Components";
 ```
 
 No `tailwind.config.js` and no JS preset are needed.
+
+## Layout
+
+Add two Blade directives to your app layout — `@livewindAppearance` and `@livewindScripts`
+(same idea as Flux's `@fluxAppearance` / `@fluxScripts`):
+
+```blade
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ...
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewindAppearance  {{-- optional dark-mode script (see note below) --}}
+</head>
+<body>
+    {{ $slot }}
+
+    @livewindScripts     {{-- global runtime: toast container --}}
+</body>
+</html>
+```
+
+- **`@livewindScripts`** (before `</body>`) renders the global toast container once, so
+  toasts work everywhere without adding `<x-livewind::toast>` by hand. If you want to
+  place/configure the toast yourself, drop this directive and use the component tag
+  instead.
+- **`@livewindAppearance`** (in `<head>`) is an anti-flash dark-mode script: it toggles
+  the `.dark` class from `localStorage`/system preference and exposes
+  `window.Livewind.appearance`. **It is optional and intrusive** — it controls the
+  `.dark` class for the *entire page*. If your app already manages dark mode, or you are
+  dropping LiveWindUI into an existing app just to try it, **leave it out**: the
+  components simply stay in light mode until a `.dark` class exists, without touching the
+  rest of your app.
+
+## Optional Alpine plugins
+
+Beyond LiveWindUI's own served bundle (loaded by `@livewindScripts`, no npm needed), a
+few components use Alpine directives that live in **optional plugins** (not bundled with
+Livewire). Register a plugin only if you use the matching component/prop:
+
+| Component / prop | Alpine directive | Plugin to register |
+|---|---|---|
+| `<x-livewind::input mask="…">` | `x-mask` | [`@alpinejs/mask`](https://alpinejs.dev/plugins/mask) |
+| `<x-livewind::modal>` (focus trap) | `x-trap` | [`@alpinejs/focus`](https://alpinejs.dev/plugins/focus) |
+
+Register them once where you start Livewire/Alpine, e.g. in `resources/js/app.js`:
+
+```js
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm'
+import mask from '@alpinejs/mask'
+import focus from '@alpinejs/focus'
+
+Alpine.plugin(mask)
+Alpine.plugin(focus)
+
+Livewire.start()
+```
+
+Everything else runs on the Alpine core bundled with Livewire — no extra setup.
 
 ## Quick Example
 
@@ -59,6 +119,7 @@ Integrated table:
 
 - Buttons: `button`, `icon-button`
 - Forms: `input`, `select`, `textarea`, `checkbox`, `radio`, `toggle`
+- Rich inputs (need the served bundle via `@livewindScripts`): `calendar`, `signature`
 - Feedback: `alert`, `toast`, `toast-item`
 - Overlay and navigation: `modal`, `dropdown`, `tabs`, `breadcrumb`
 - Data: `pagination`, `table`, `data-table`
@@ -72,13 +133,15 @@ Every component is consumed with the configurable prefix:
 
 ## Toasts & Modals
 
-LiveWindUI ships a global toast container and a named modal, both driven by events
-with **zero package JavaScript files** (logic lives in inline Alpine).
+LiveWindUI ships a global toast container and a named modal, both driven by events. The
+toast logic lives in the served bundle (`Alpine.data('lwToast')`); the modal uses inline
+Alpine.
 
 ### Container
 
-Add the toast container once in your layout (it auto-stacks, auto-dismisses and
-survives `wire:navigate` via `@persist`):
+`@livewindScripts` already renders the toast container once. If you'd rather place or
+configure it yourself, drop the directive and add the tag (it auto-stacks, auto-dismisses
+and survives `wire:navigate` via `@persist`):
 
 ```blade
 <x-livewind::toast />
@@ -126,8 +189,8 @@ class SaveContact extends Component
 ### From JavaScript / Alpine
 
 ```js
-window.LiveWindUI.toast('Quick message');
-window.LiveWindUI.toast({ variant: 'success', title: 'Done', message: 'Saved!' });
+window.Livewind.toast('Quick message');
+window.Livewind.toast({ variant: 'success', title: 'Done', message: 'Saved!' });
 ```
 
 ### Defaults
@@ -154,7 +217,7 @@ Import Tailwind and the theme in your `app.css` (see Quick Install):
 ```css
 @import "tailwindcss";
 @import "../../vendor/denisgusto/livewindui/resources/css/livewind.css";
-@source "../../vendor/denisgusto/livewindui/resources/views";
+@source "../../vendor/denisgusto/livewindui/src/Components";
 ```
 
 Publish the theme to customize the raw values:
@@ -198,7 +261,7 @@ A no-flash snippet for your layout `<head>`:
 
 ## Philosophy
 
-- **Zero package JavaScript files:** behavior is expressed through Livewire and inline Alpine directives.
+- **Minimal served JS bundle:** stateful behavior lives in a small `Alpine.data()` bundle served by the package (no npm on your side); everything else is Livewire + inline Alpine.
 - **Tailwind-only styling:** no CSS framework, no DaisyUI, no custom theme runtime.
 - **DX-first Blade API:** common Livewire patterns like `wire:model`, loading states, validation errors, modals and toasts are available with concise props.
 - **Composable primitives:** complex screens can be built from small Blade components without losing access to Tailwind classes or normal Laravel views.

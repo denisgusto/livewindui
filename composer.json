@@ -49,12 +49,14 @@
         "laravel/pint": "^1.13",
         "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
         "pestphp/pest": "^2.0|^3.0|^4.0",
-        "pestphp/pest-plugin-laravel": "^2.0|^3.0|^4.0"
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0|^4.0",
+        "larastan/larastan": "^2.0|^3.0"
     },
     "scripts": {
         "test": "pest",
         "format": "pint",
-        "format:test": "pint --test"
+        "format:test": "pint --test",
+        "analyse": "phpstan analyse --memory-limit=512M"
     },
     "config": {
         "allow-plugins": {

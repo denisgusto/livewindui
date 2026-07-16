@@ -68,4 +68,4 @@
 }
 
 @source "../../src/Components/**/*.php";
-@source "../views/components/**/*.blade.php";
+@source "../../src/Components/**/*.blade.php";

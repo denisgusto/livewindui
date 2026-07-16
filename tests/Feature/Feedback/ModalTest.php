@@ -43,7 +43,7 @@ it('omits close controls when not closeable', function () {
 
     expect($html)
         ->not->toContain('x-on:keydown.escape.window="close()"')
-        ->not->toContain('aria-label="Fechar modal"')
+        ->not->toContain('aria-label="Close modal"')
         ->not->toContain('x-on:click="close()"');
 });
 

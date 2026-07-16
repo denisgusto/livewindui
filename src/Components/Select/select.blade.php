@@ -1,0 +1,61 @@
+{{-- Select: select nativo com options por array/objeto, slot customizado, wire:model e erro automatico. Props: model, modelLive, label, hint, placeholder, options. Uso: <x-livewind::select model="category" :options="$options" /> --}}
+
+@php
+    $errors = $errors ?? new Illuminate\Support\ViewErrorBag();
+    $hasError = filled($model) && $errors->has($model);
+    $baseId = $attributes->get('id') ?? 'livewind-select-'.md5((string) ($model ?? $label ?? 'field'));
+    $descriptionId = "{$baseId}-description";
+    $wireModelAttribute = filled($model) ? ($modelLive ? 'wire:model.live' : 'wire:model') : null;
+
+    $selectAttributes = $attributes
+        ->except(['wire:model', 'wire:model.live'])
+        ->class([
+            'block w-full rounded-md border px-3 py-2 text-sm text-surface-foreground shadow-sm transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground',
+            'border-border focus:border-accent focus:ring-accent' => ! $hasError,
+            'border-danger focus:border-danger focus:ring-danger' => $hasError,
+        ])
+        ->merge([
+            'id' => $baseId,
+            'aria-invalid' => $hasError ? 'true' : 'false',
+            'aria-describedby' => ($hasError || $hint) ? $descriptionId : null,
+        ]);
+
+    if ($wireModelAttribute) {
+        $selectAttributes = $selectAttributes->merge([$wireModelAttribute => $model]);
+    }
+@endphp
+
+<div>
+    @if ($label)
+        <label for="{{ $baseId }}" class="mb-1 block text-sm font-medium text-surface-foreground">
+            {{ $label }}
+        </label>
+    @endif
+
+    <select {{ $selectAttributes }}>
+        @if ($placeholder)
+            <option value="">{{ $placeholder }}</option>
+        @endif
+
+        @forelse ($options as $value => $option)
+            @php
+                $optionValue = is_array($option) ? ($option['value'] ?? $value) : (is_object($option) ? ($option->value ?? $value) : $value);
+                $optionLabel = is_array($option) ? ($option['label'] ?? $optionValue) : (is_object($option) ? ($option->label ?? $optionValue) : $option);
+            @endphp
+
+            <option value="{{ $optionValue }}">{{ $optionLabel }}</option>
+        @empty
+            {{ $slot }}
+        @endforelse
+    </select>
+
+    @if ($hasError)
+        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-danger">
+            {{ $errors->first($model) }}
+        </p>
+    @elseif ($hint)
+        <p id="{{ $descriptionId }}" class="mt-1 text-sm text-muted-foreground">
+            {{ $hint }}
+        </p>
+    @endif
+</div>

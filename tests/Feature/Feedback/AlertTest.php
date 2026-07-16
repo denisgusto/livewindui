@@ -43,7 +43,7 @@ it('renders dismissible behavior', function () {
         ->toContain('x-data="{ show: true }"')
         ->toContain('x-show="show"')
         ->toContain('x-on:click="show = false"')
-        ->toContain('aria-label="Fechar alerta"');
+        ->toContain('aria-label="Close alert"');
 });
 
 it('renders auto dismiss behavior', function () {

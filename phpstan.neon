@@ -1,0 +1,17 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    ignoreErrors:
+        # Views com namespace de pacote (livewind::...) nao sao resolvidas
+        # estaticamente pelo phpstan; sao validas em runtime.
+        -
+            message: '#Parameter \#1 \$view of function view expects view-string#'
+            identifier: argument.type
+        # Trait de API publica: consumido pelo app do consumidor, nao pela lib.
+        -
+            message: '#Trait Livewind\\Concerns\\InteractsWithToasts is used zero times#'
+            identifier: trait.unused
