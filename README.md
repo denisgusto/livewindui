@@ -1,4 +1,4 @@
-# LiveWindUI
+# LivewindUI
 
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-777bb4.svg)](https://www.php.net/)
 [![Laravel](https://img.shields.io/badge/Laravel-10%2B-ff2d20.svg)](https://laravel.com/)
@@ -17,7 +17,7 @@ composer require denisgusto/livewindui
 php artisan livewind:install   # publishes theme/config + wires the Tailwind imports
 ```
 
-LiveWindUI targets **Tailwind CSS v4**, configured in CSS. In your `app.css`, import
+LivewindUI targets **Tailwind CSS v4**, configured in CSS. In your `app.css`, import
 Tailwind, import the theme, and register the package views as a source:
 
 ```css
@@ -57,13 +57,13 @@ Add two Blade directives to your app layout — `@livewindAppearance` and `@live
   the `.dark` class from `localStorage`/system preference and exposes
   `window.Livewind.appearance`. **It is optional and intrusive** — it controls the
   `.dark` class for the *entire page*. If your app already manages dark mode, or you are
-  dropping LiveWindUI into an existing app just to try it, **leave it out**: the
+  dropping LivewindUI into an existing app just to try it, **leave it out**: the
   components simply stay in light mode until a `.dark` class exists, without touching the
   rest of your app.
 
 ## Optional Alpine plugins
 
-Beyond LiveWindUI's own served bundle (loaded by `@livewindScripts`, no npm needed), a
+Beyond LivewindUI's own served bundle (loaded by `@livewindScripts`, no npm needed), a
 few components use Alpine directives that live in **optional plugins** (not bundled with
 Livewire). Register a plugin only if you use the matching component/prop:
 
@@ -98,7 +98,7 @@ Manual form markup:
 @enderror
 ```
 
-LiveWindUI:
+LivewindUI:
 
 ```blade
 <x-livewind::input model="email" label="E-mail" />
@@ -133,7 +133,7 @@ Every component is consumed with the configurable prefix:
 
 ## Toasts & Modals
 
-LiveWindUI ships a global toast container and a named modal, both driven by events. The
+LivewindUI ships a global toast container and a named modal, both driven by events. The
 toast logic lives in the served bundle (`Alpine.data('lwToast')`); the modal uses inline
 Alpine.
 
@@ -205,7 +205,7 @@ and `modal` (`max_width`):
 
 ## Theming & Dark Mode
 
-LiveWindUI uses a **semantic token** color system (Tailwind v4 `@theme`), inspired by
+LivewindUI uses a **semantic token** color system (Tailwind v4 `@theme`), inspired by
 shadcn/ui. Components reference role tokens — `accent`, `danger`, `success`, `warning`,
 `surface`, `muted`, `border` (each with a `-foreground` pair) — that swap automatically
 under the `.dark` class. Dark mode needs **no `dark:` classes** in your markup.
@@ -296,4 +296,4 @@ Keep components Blade-first, accessible, Tailwind-only and compatible with Larav
 
 ## License
 
-LiveWindUI is open-sourced software licensed under the [MIT license](LICENSE).
+LivewindUI is open-sourced software licensed under the [MIT license](LICENSE).

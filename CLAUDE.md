@@ -1,4 +1,4 @@
-# CLAUDE.md — LiveWindUI
+# CLAUDE.md — LivewindUI — Contexto do projeto
 
 Contexto do projeto para o Claude Code. Leia este arquivo na primeira interação de cada sessão; ele descreve o que estamos construindo, como o código se organiza e quais convenções seguir.
 
@@ -6,7 +6,7 @@ Contexto do projeto para o Claude Code. Leia este arquivo na primeira interaçã
 
 ## 1. Visão geral
 
-**LiveWindUI** é uma biblioteca de componentes Blade reativos para a TALL Stack (Tailwind CSS, Alpine.js, Laravel, Livewire), distribuída como pacote Composer (`denisgusto/livewindui`). O objetivo é entregar componentes pré-configurados com integração nativa ao Livewire 3, estilização via Tailwind 4 puro (sem plugins) e interatividade via Alpine 3. Para JS, a lib segue o modelo **"bundle mínimo servido"** (decidido em jul/2026, revisando o "zero JS" original): componentes com **lógica de estado** (toast, calendar, signature) vivem num `Alpine.data()` dentro de `dist/livewind.js`, que é **servido por rota** e injetado por `@livewindScripts` — o consumidor **não roda npm**. O Alpine **trivial** (`x-show`, `open:false`) fica inline no Blade. Mais **plugins Alpine opcionais** que o app registra quando usa certos componentes (ver §4.5).
+**LivewindUI** é uma biblioteca de componentes Blade reativos para a TALL Stack (Tailwind CSS, Alpine.js, Laravel, Livewire), distribuída como pacote Composer (`denisgusto/livewindui`). O objetivo é entregar componentes pré-configurados com integração nativa ao Livewire 3, estilização via Tailwind 4 puro (sem plugins) e interatividade via Alpine 3. Para JS, a lib segue o modelo **"bundle mínimo servido"** (decidido em jul/2026, revisando o "zero JS" original): componentes com **lógica de estado** (toast, calendar, signature) vivem num `Alpine.data()` dentro de `dist/livewind.js`, que é **servido por rota** e injetado por `@livewindScripts` — o consumidor **não roda npm**. O Alpine **trivial** (`x-show`, `open:false`) fica inline no Blade. Mais **plugins Alpine opcionais** que o app registra quando usa certos componentes (ver §4.5).
 
 **Proposta de valor (não negociar):**
 
@@ -43,18 +43,10 @@ livewind/
 ├── composer.json                  # define vendor/name, autoload PSR-4, dependências, auto-discovery
 ├── README.md                      # documentação de uso
 ├── CLAUDE.md                      # este arquivo
-├── docs/
-│   ├── ROADMAP.md                 # marcos e iterações (espelha Quadro 5 do TCC)
-│   └── sprints/
-│       ├── SPRINT-01-base-fundamentals.md # iteração 1
-│       ├── SPRINT-02-forms-feedback.md    # iteração 2
-│       ├── SPRINT-03-data-navigation.md   # iteração 3
-│       └── SPRINT-04-demo-tests-docs.md   # iteração 4
 ├── .claude/
 │   └── skills/                    # skills repetitivas para o Claude Code
 │       ├── create-component.md
 │       ├── write-component-test.md
-│       ├── add-demo-page.md
 │       ├── handle-attribute-merge.md
 │       └── setup-livewire-entangle.md
 ├── config/
@@ -265,45 +257,44 @@ Componentes Blade anônimos em `resources/views/components/` são registrados vi
 ```bash
 # Setup inicial (executar uma vez após clonar)
 composer install
+npm install                  # só p/ mexer no bundle JS (dist/ já vem commitado)
 
-# Code style
+# Code style + análise estática (PHP)
 vendor/bin/pint              # corrige
 vendor/bin/pint --test       # apenas verifica
+composer analyse             # phpstan (level 5)
 
 # Testes
-vendor/bin/pest              # tudo
+vendor/bin/pest              # PHP (tudo)
 vendor/bin/pest --filter=ButtonTest
+npm test                     # vitest (lógica JS: toast, calendar, signature)
 
-# App demo
-cd demo && php artisan serve
-cd demo && npm run dev       # vite watch
-
-# Inspecionar bundle JS final da demo (verificar RNF01)
-cd demo && npm run build && du -h public/build/assets/*.js
+# Bundle JS (ao mexer em js/ — COMMITAR o dist/ resultante)
+npm run build                # gera dist/livewind.js
+npm run lint                 # eslint
 ```
 
 ---
 
 ## 7. Como o Claude Code deve trabalhar aqui
 
-1. **Antes de implementar**, leia o sprint relevante (`docs/sprints/SPRINT-XX-*.md`) e o `docs/ROADMAP.md`.
-2. Para tarefas repetitivas, **leia a skill correspondente em `.claude/skills/`** antes de codar. Não invente padrões — siga os existentes.
-3. Implemente um componente de cada vez. Para cada componente:
-   - Crie o template Blade (e a classe PHP, se necessário).
-   - Escreva o teste Pest (ver `.claude/skills/write-component-test.md`).
-   - Rode `vendor/bin/pint` e `vendor/bin/pest --filter=<NomeDoComponenteTest>`.
-   - Adicione uma página de demo (ver `.claude/skills/add-demo-page.md`).
-4. **Não altere** decisões arquiteturais documentadas neste CLAUDE.md sem confirmação do desenvolvedor humano. Se você acha que algo aqui está errado, **pergunte primeiro**.
-5. **Não crie componentes fora do escopo do sprint atual**, mesmo se parecerem úteis. Anote no `docs/ROADMAP.md` como sugestão para iteração futura.
-6. Se um requisito do sprint estiver ambíguo, marque com `// TODO(@dev):` no código e siga em frente; pergunte ao final.
+1. Para tarefas repetitivas, **leia a skill correspondente em `.claude/skills/`** antes de codar. Não invente padrões — siga os existentes.
+2. Implemente um componente de cada vez, em **colocation** (`src/Components/<Nome>/`, ver §3). Para cada componente:
+   - Crie a classe PHP (`<Nome>.php`) + a view Blade colocada (`<kebab>.blade.php`).
+   - Escreva o teste Pest em `tests/Feature/Components/<Nome>Test.php` (ver `.claude/skills/write-component-test.md`).
+   - Se houver lógica JS de estado, adicione `js/components/<nome>.js` (`Alpine.data()`) + teste vitest, e `npm run build` (commitar `dist/`).
+   - Rode `vendor/bin/pint`, `composer analyse` e `vendor/bin/pest --filter=<Nome>Test`.
+3. **Não altere** decisões arquiteturais documentadas neste CLAUDE.md sem confirmação do desenvolvedor humano. Se você acha que algo aqui está errado, **pergunte primeiro**.
+4. **Não crie componentes não solicitados**, mesmo se parecerem úteis — sugira ao desenvolvedor humano.
+5. Se um requisito estiver ambíguo, marque com `// TODO(@dev):` no código e siga em frente; pergunte ao final.
 
 ---
 
 ## 8. Anti-padrões a evitar
 
 - ❌ Criar arquivos CSS (`.css`, `.scss`) próprios da biblioteca — **exceto** o único CSS de tema (`resources/css/livewind.css`), ver §10.
-- ❌ Adicionar dependências npm (a biblioteca tem zero `package.json`).
-- ❌ Usar `setTimeout` ou JS imperativo solto em templates. Use Alpine.
+- ❌ Crescer Alpine inline num template Blade além de ~30–40 linhas de lógica — extraia para um `Alpine.data()` no bundle (`js/components/`, ver §4.5).
+- ❌ Usar `setTimeout`/timers/algoritmo **inline no Blade**. Estado trivial (`x-show`, `open:false`) é inline; lógica com estado vai pro bundle.
 - ❌ Hardcode de cores fora do sistema Tailwind (sem `#ff5733` direto, use `bg-red-500` ou `bg-[#ff5733]` se realmente necessário).
 - ❌ Esquecer `$attributes->class([...])->merge()` — quebra customização do consumidor.
 - ❌ Componentes que carregam dados sozinhos via Eloquent. O consumidor sempre fornece os dados via props.
@@ -314,10 +305,10 @@ cd demo && npm run build && du -h public/build/assets/*.js
 
 ## 9. Onde encontrar mais contexto
 
-- Especificação completa do projeto: ver TCC (`TCC_LiveWindUI_Unificado.docx` — Capítulos 1 a 4).
+- Especificação completa do projeto: ver TCC (`TCC_LivewindUI_Unificado.docx` — Capítulos 1 a 4).
 - Requisitos funcionais: Quadro 6 do TCC (RF01–RF10).
 - Requisitos não funcionais: Quadro 7 do TCC (RNF01–RNF07).
-- Escopo de componentes por iteração: Quadro 5 do TCC e arquivos `SPRINT-*.md`.
+- Escopo de componentes por iteração: Quadro 5 do TCC.
 
 ---
 
@@ -369,10 +360,9 @@ Basta sobrescrever os valores crus no próprio `app.css`, depois do `@import` da
 .dark { --lw-accent: 74 222 128; --lw-accent-content: 134 239 172; }
 ```
 
-- **`config('livewind.theme.accent')`** — nome da cor padrão (informativo; a cor real
-  vem das variáveis CSS).
-- **Dark mode** = classe `.dark` no `<html>`, aplicada pelo consumidor (a demo usa um
-  script anti-flash + `window.LiveWindUIAppearance`).
+- **Dark mode** = classe `.dark` no `<html>`, aplicada pelo consumidor. A diretiva
+  opcional `@livewindAppearance` fornece um script anti-flash + `window.Livewind.appearance`
+  (ver §4.5).
 
 > ⚠️ **Migração em andamento:** o Button já está 100% no sistema semântico. Os demais
 > componentes ainda contêm cores neutras literais + `dark:` (continuam funcionando no v4);

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
-use Livewind\Livewind as LivewindFacade;
+use Livewind\Facades\Livewind as LivewindFacade;
 
 class LivewindServiceProvider extends ServiceProvider
 {
@@ -42,8 +42,6 @@ class LivewindServiceProvider extends ServiceProvider
         $this->registerAssetRoute();
         $this->registerPublishing();
         $this->registerCommands();
-
-        app('livewind')->boot();
     }
 
     /**

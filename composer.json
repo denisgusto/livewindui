@@ -1,6 +1,6 @@
 {
     "name": "denisgusto/livewindui",
-    "description": "LiveWindUI — a modern UI component library for Laravel Livewire, styled with Tailwind CSS.",
+    "description": "LivewindUI — a modern UI component library for Laravel Livewire, styled with Tailwind CSS.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -12,10 +12,7 @@
     "autoload": {
         "psr-4": {
             "Livewind\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

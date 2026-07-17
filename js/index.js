@@ -1,5 +1,5 @@
 /**
- * LiveWindUI runtime bundle.
+ * LivewindUI runtime bundle.
  *
  * Servido via @livewindScripts como um <script> auto-executável, rodando sobre o
  * Alpine que o Livewire já carrega. Registra os Alpine.data() dos componentes com

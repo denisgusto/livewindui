@@ -14,22 +14,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Theme
-    |--------------------------------------------------------------------------
-    |
-    | The default accent ("brand") color used by primary buttons and other
-    | interactive accents. This is informational only: the actual color values
-    | are driven by the semantic CSS variables in resources/css/livewind.css
-    | (publish them to re-theme globally). Component color is fully semantic —
-    | there is no per-instance literal `color` prop.
-    |
-    */
-    'theme' => [
-        'accent' => 'indigo',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Toast
     |--------------------------------------------------------------------------
     |
@@ -54,19 +38,5 @@ return [
     */
     'modal' => [
         'max_width' => 'md',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Button
-    |--------------------------------------------------------------------------
-    |
-    | Global defaults for buttons. Visual customization is driven by the
-    | semantic tokens in resources/css/livewind.css.
-    |
-    */
-    'button' => [
-        'variant' => 'primary',
-        'size' => 'md',
     ],
 ];

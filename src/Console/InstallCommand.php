@@ -10,11 +10,11 @@ class InstallCommand extends Command
 {
     protected $signature = 'livewind:install {--force : Overwrite files that already exist}';
 
-    protected $description = 'Install LiveWindUI: publish the theme/config and wire up the Tailwind imports.';
+    protected $description = 'Install LivewindUI: publish the theme/config and wire up the Tailwind imports.';
 
     public function handle(): int
     {
-        $this->components->info('Installing LiveWindUI…');
+        $this->components->info('Installing LivewindUI...');
 
         $force = (bool) $this->option('force');
         $this->callSilently('vendor:publish', ['--tag' => 'livewind-theme', '--force' => $force]);
@@ -24,7 +24,7 @@ class InstallCommand extends Command
         $this->printLayoutHelp();
 
         $this->newLine();
-        $this->components->info('LiveWindUI installed.');
+        $this->components->info('LivewindUI installed.');
 
         return self::SUCCESS;
     }
@@ -46,7 +46,7 @@ class InstallCommand extends Command
         $marker = 'vendor/denisgusto/livewindui/resources/css/livewind.css';
 
         if (str_contains($contents, $marker)) {
-            $this->components->info('app.css already imports the LiveWindUI theme.');
+            $this->components->info('app.css already imports the LivewindUI theme.');
 
             return;
         }

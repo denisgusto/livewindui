@@ -136,18 +136,6 @@ final class DataTable extends Component
     }
 
     /**
-     * Indica se o conjunto atual possui linhas renderizaveis.
-     */
-    public function hasRows(): bool
-    {
-        if ($this->rows instanceof Paginator) {
-            return count($this->rows->items()) > 0;
-        }
-
-        return collect($this->rows)->isNotEmpty();
-    }
-
-    /**
      * Indica se as linhas vieram de um paginator Laravel/Livewire.
      */
     public function isPaginator(): bool

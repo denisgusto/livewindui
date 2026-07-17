@@ -1,6 +1,6 @@
 {
     "name": "livewindui",
-    "description": "Runtime JS bundle for LiveWindUI (served via @livewindScripts).",
+    "description": "Runtime JS bundle for LivewindUI (served via @livewindScripts).",
     "private": true,
     "type": "module",
     "scripts": {

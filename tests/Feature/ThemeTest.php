@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Blade;
 
-it('exposes the default accent in config', function () {
-    expect(config('livewind.theme.accent'))->toBe('indigo');
-});
-
 it('ships the theme css and no longer ships a tailwind js preset', function () {
     expect(file_exists(__DIR__.'/../../resources/css/livewind.css'))->toBeTrue()
         ->and(file_exists(__DIR__.'/../../tailwind.preset.js'))->toBeFalse();

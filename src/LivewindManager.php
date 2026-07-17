@@ -8,11 +8,6 @@ use Livewire\Component;
 
 class LivewindManager
 {
-    public function boot(): void
-    {
-        // Boot logic for LivewindManager
-    }
-
     public static function normalizeToast(
         string $message = '',
         ?string $title = null,
