@@ -81,11 +81,15 @@ livewind/
 ├── tests/
 │   ├── Pest.php
 │   ├── TestCase.php               # estende Orchestra Testbench
-│   ├── Unit/
 │   └── Feature/
-│       ├── ButtonTest.php
-│       ├── InputTest.php
-│       └── ...
+│       ├── Components/            # 1 teste por componente (espelha src/Components/)
+│       │   ├── ButtonTest.php     #   BadgeTest, TabsTest (cobre a família), …
+│       │   └── …
+│       ├── ThemeTest.php          # cross-cutting: tema, i18n, diretivas, facade, install
+│       ├── TranslationsTest.php
+│       ├── RuntimeDirectivesTest.php
+│       ├── LivewindFacadeTest.php
+│       └── InstallCommandTest.php
 
 ```
 
