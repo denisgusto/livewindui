@@ -9,8 +9,6 @@ _DS_Store
 .php-cs-fixer.cache
 .DS_Store
 .run
-
-# --- Assistentes de IA (instruções, sessões e configs locais) ---
 .claude/
 CLAUDE.md
 .codex/
