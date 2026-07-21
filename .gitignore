@@ -13,4 +13,5 @@ _DS_Store
 .superpowers/
 .codex/
 .claude/
+CLAUDE.md
 .agents/
