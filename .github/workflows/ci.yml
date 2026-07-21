@@ -52,7 +52,7 @@ jobs:
             "livewire/livewire:${{ matrix.livewire }}"
 
       - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress
+        run: composer update -W --prefer-dist --no-interaction --no-progress
 
       - name: Pint
         run: vendor/bin/pint --test
