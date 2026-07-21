@@ -1,24 +1,88 @@
-# LivewindUI
+# Guia de Avaliação do Artefato — LivewindUI
 
-[![PHP](https://img.shields.io/badge/PHP-8.1%2B-777bb4.svg)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/Laravel-10%2B-ff2d20.svg)](https://laravel.com/)
-[![Livewire](https://img.shields.io/badge/Livewire-3.5%2B-fb70a9.svg)](https://livewire.laravel.com/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](#development)
+Documento destinado à **banca examinadora** e a quem for revisar o Trabalho de Conclusão
+de Curso associado a este repositório.
 
-Blade components for Laravel Livewire, styled with Tailwind CSS. Stateful interactivity
-ships in a **tiny served JS bundle** (no npm on your side); trivial interactivity is inline
-Alpine over the Alpine that Livewire already bundles.
+| | |
+|---|---|
+| **Trabalho** | LivewindUI: desenvolvimento de uma biblioteca de componentes reativos para a TALL Stack com foco em produtividade e experiência do desenvolvedor |
+| **Autor** | Denis Augusto Carreira da Silva |
+| **Curso** | Pós-Graduação em Sistemas de Informação — Faculdade Futura / Grupo Educacional Faveni |
+| **Artefato** | Pacote Composer `denisgusto/livewindui` |
+| **Licença** | MIT |
 
-## Quick Install
+> A documentação de uso da biblioteca, voltada a desenvolvedores consumidores, está em
+> [`INSTALL.md`](INSTALL.md) (em inglês). **Este documento é complementar** e existe para
+> permitir que o avaliador verifique, por conta própria, cada afirmação quantitativa
+> feita no texto do TCC.
+
+---
+
+## 1. O que é o artefato
+
+A LivewindUI é uma biblioteca de componentes Blade para a TALL Stack (Tailwind CSS,
+Alpine.js, Laravel e Livewire), distribuída como pacote Composer. Ela entrega componentes
+de interface pré-configurados com reatividade Livewire nativa — vínculo de dados, exibição
+automática de erros de validação e estados de carregamento — sem exigir que o projeto
+consumidor execute qualquer etapa de compilação JavaScript.
+
+Três decisões de arquitetura descritas no TCC são diretamente observáveis no código:
+
+- **Colocation com classe PHP para todos os componentes** — cada componente ocupa uma
+  pasta em `src/Components/`, reunindo classe e view.
+- **Bundle mínimo servido** — a lógica de estado (toast, calendar, signature) vive em
+  `dist/livewind.js`, versionado e servido por rota, e não por npm no consumidor.
+- **Tema por tokens semânticos** — arquivo único em `resources/css/livewind.css`, com
+  suporte a modo escuro sem classes condicionais nos componentes.
+
+---
+
+## 2. Requisitos de ambiente
+
+Para **avaliar o artefato** (seções 4 e 5 deste guia):
+
+| Requisito | Versão | Observação |
+|---|---|---|
+| PHP | 8.1 ou superior | com `ext-zip` e `ext-mbstring` |
+| Composer | 2.x | |
+| Node.js | 18 ou superior | **opcional** — apenas para reexecutar os testes de JS |
+| Python | 3.8 ou superior | **opcional** — apenas para reproduzir a medição do Quadro 6 |
+
+Para **usar a biblioteca** em um projeto (seção 3):
+
+| Requisito | Versão |
+|---|---|
+| Laravel | 10, 11, 12 ou 13 |
+| Livewire | 3.5+ ou 4.3+ |
+| Tailwind CSS | 4.x |
+
+---
+
+## 3. Instalação em um projeto Laravel
+
+Esta seção reproduz o procedimento de adoção descrito no TCC. São **quatro passos**.
+
+### Passo 1 — Instalar o pacote
 
 ```bash
 composer require denisgusto/livewindui
-php artisan livewind:install   # publishes theme/config + wires the Tailwind imports
 ```
 
-LivewindUI targets **Tailwind CSS v4**, configured in CSS. In your `app.css`, import
-Tailwind, import the theme, and register the package views as a source:
+O Service Provider é registrado automaticamente por auto-discovery. Nenhum registro
+manual é necessário.
+
+### Passo 2 — Executar o instalador
+
+```bash
+php artisan livewind:install
+```
+
+O comando publica o tema e o arquivo de configuração e insere os imports necessários no
+CSS da aplicação.
+
+### Passo 3 — Conferir o CSS da aplicação
+
+Caso prefira fazer manualmente, o `resources/css/app.css` deve conter:
 
 ```css
 @import "tailwindcss";
@@ -26,274 +90,192 @@ Tailwind, import the theme, and register the package views as a source:
 @source "../../vendor/denisgusto/livewindui/src/Components";
 ```
 
-No `tailwind.config.js` and no JS preset are needed.
+> **Não existe `tailwind.config.js`.** A biblioteca tem como alvo o Tailwind CSS 4, que é
+> configurado por CSS. A diretiva `@source` substitui o antigo array `content`.
 
-## Layout
-
-Add two Blade directives to your app layout — `@livewindAppearance` and `@livewindScripts`
-(same idea as Flux's `@fluxAppearance` / `@fluxScripts`):
+### Passo 4 — Adicionar as diretivas ao layout
 
 ```blade
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    ...
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewindAppearance  {{-- optional dark-mode script (see note below) --}}
+    @livewindAppearance  {{-- opcional: script anti-flash de modo escuro --}}
 </head>
 <body>
     {{ $slot }}
-
-    @livewindScripts     {{-- global runtime: toast container --}}
+    @livewindScripts     {{-- runtime: bundle servido + container global de toasts --}}
 </body>
 </html>
 ```
 
-- **`@livewindScripts`** (before `</body>`) renders the global toast container once, so
-  toasts work everywhere without adding `<x-livewind::toast>` by hand. If you want to
-  place/configure the toast yourself, drop this directive and use the component tag
-  instead.
-- **`@livewindAppearance`** (in `<head>`) is an anti-flash dark-mode script: it toggles
-  the `.dark` class from `localStorage`/system preference and exposes
-  `window.Livewind.appearance`. **It is optional and intrusive** — it controls the
-  `.dark` class for the *entire page*. If your app already manages dark mode, or you are
-  dropping LivewindUI into an existing app just to try it, **leave it out**: the
-  components simply stay in light mode until a `.dark` class exists, without touching the
-  rest of your app.
+`@livewindAppearance` é **opcional e intrusivo** — controla a classe `.dark` da página
+inteira. Em aplicação que já gerencia tema, omita-a.
 
-## Optional Alpine plugins
-
-Beyond LivewindUI's own served bundle (loaded by `@livewindScripts`, no npm needed), a
-few components use Alpine directives that live in **optional plugins** (not bundled with
-Livewire). Register a plugin only if you use the matching component/prop:
-
-| Component / prop | Alpine directive | Plugin to register |
-|---|---|---|
-| `<x-livewind::input mask="…">` | `x-mask` | [`@alpinejs/mask`](https://alpinejs.dev/plugins/mask) |
-| `<x-livewind::modal>` (focus trap) | `x-trap` | [`@alpinejs/focus`](https://alpinejs.dev/plugins/focus) |
-
-Register them once where you start Livewire/Alpine, e.g. in `resources/js/app.js`:
-
-```js
-import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm'
-import mask from '@alpinejs/mask'
-import focus from '@alpinejs/focus'
-
-Alpine.plugin(mask)
-Alpine.plugin(focus)
-
-Livewire.start()
-```
-
-Everything else runs on the Alpine core bundled with Livewire — no extra setup.
-
-## Quick Example
-
-Manual form markup:
+### Verificação
 
 ```blade
-<input wire:model="email" class="block w-full rounded-md border px-3 py-2">
-@error('email')
-    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-@enderror
-```
-
-LivewindUI:
-
-```blade
+<x-livewind::button>Funcionou</x-livewind::button>
 <x-livewind::input model="email" label="E-mail" />
-<x-livewind::button type="submit" loading="save">Save</x-livewind::button>
 ```
 
-Integrated table:
+### Plugins Alpine opcionais
 
-```blade
-<x-livewind::data-table :columns="$columns" :rows="$contacts">
-    <x-slot:header>
-        <x-livewind::button wire:click="openCreate">New contact</x-livewind::button>
-    </x-slot:header>
-</x-livewind::data-table>
-```
+Dois componentes usam diretivas que não integram o núcleo do Alpine embarcado pelo
+Livewire. Registre o plugin apenas se usar o recurso correspondente:
 
-## Components
+| Componente / prop | Diretiva | Plugin |
+|---|---|---|
+| `<x-livewind::modal>` (confinamento de foco) | `x-trap` | `@alpinejs/focus` |
+| `<x-livewind::input mask="...">` | `x-mask` | `@alpinejs/mask` |
 
-- Buttons: `button`, `icon-button`
-- Forms: `input`, `select`, `textarea`, `checkbox`, `radio`, `toggle`
-- Rich inputs (need the served bundle via `@livewindScripts`): `calendar`, `signature`
-- Feedback: `alert`, `toast`, `toast-item`
-- Overlay and navigation: `modal`, `dropdown`, `tabs`, `breadcrumb`
-- Data: `pagination`, `table`, `data-table`
-- Layout: `container`, `card`, `divider`, `badge`, `spinner`
+---
 
-Every component is consumed with the configurable prefix:
-
-```blade
-<x-livewind::button>Save</x-livewind::button>
-```
-
-## Toasts & Modals
-
-LivewindUI ships a global toast container and a named modal, both driven by events. The
-toast logic lives in the served bundle (`Alpine.data('lwToast')`); the modal uses inline
-Alpine.
-
-### Container
-
-`@livewindScripts` already renders the toast container once. If you'd rather place or
-configure it yourself, drop the directive and add the tag (it auto-stacks, auto-dismisses
-and survives `wire:navigate` via `@persist`):
-
-```blade
-<x-livewind::toast />
-```
-
-### The `Livewind` facade
-
-Mirroring FluxUI's API, trigger toasts and modals from anywhere:
-
-```php
-use Livewind\Facades\Livewind;
-
-Livewind::toast(message: 'Saved!', title: 'Done', variant: 'success', duration: 3000);
-Livewind::success('Saved!');          // success | info | warning | danger | error
-Livewind::error('Something failed');  // error -> danger variant
-
-Livewind::modal('confirm-delete')->show();   // ->open() / ->close()
-Livewind::modals()->close();                  // close every open modal
-```
-
-`duration` is in milliseconds; `0` keeps the toast until dismissed. The payload
-also accepts FluxUI aliases (`heading`/`text`) besides `title`/`message`.
-
-When called **outside** a Livewire request (e.g. a controller before a redirect),
-toasts are flashed to the session and rendered on the next page load.
-
-### From a Livewire component
-
-Use the trait to dispatch from `$this`, or call the facade directly:
-
-```php
-use Livewind\Concerns\InteractsWithToasts;
-
-class SaveContact extends Component
-{
-    use InteractsWithToasts;
-
-    public function save(): void
-    {
-        $this->toast(message: 'Contact saved', variant: 'success');
-    }
-}
-```
-
-### From JavaScript / Alpine
-
-```js
-window.Livewind.toast('Quick message');
-window.Livewind.toast({ variant: 'success', title: 'Done', message: 'Saved!' });
-```
-
-### Defaults
-
-Publish the config to change defaults for `toast` (`position`, `duration`, `max`)
-and `modal` (`max_width`):
-
-```php
-'toast' => ['position' => 'top-right', 'duration' => 4000, 'max' => 5],
-'modal' => ['max_width' => 'md'],
-```
-
-## Theming & Dark Mode
-
-LivewindUI uses a **semantic token** color system (Tailwind v4 `@theme`), inspired by
-shadcn/ui. Components reference role tokens — `accent`, `danger`, `success`, `warning`,
-`surface`, `muted`, `border` (each with a `-foreground` pair) — that swap automatically
-under the `.dark` class. Dark mode needs **no `dark:` classes** in your markup.
-
-### Setup
-
-Import Tailwind and the theme in your `app.css` (see Quick Install):
-
-```css
-@import "tailwindcss";
-@import "../../vendor/denisgusto/livewindui/resources/css/livewind.css";
-@source "../../vendor/denisgusto/livewindui/src/Components";
-```
-
-Publish the theme to customize the raw values:
+## 4. Avaliação do artefato
 
 ```bash
-php artisan vendor:publish --tag=livewind-theme
-```
-
-### Theming
-
-Re-theme the **whole** library by overriding the raw role variables in your own
-`app.css`, after the import. One change recolors every component:
-
-```css
-/* make the whole system green */
-:root { --lw-accent: 34 197 94; --lw-accent-content: 22 163 74; }
-.dark { --lw-accent: 74 222 128; --lw-accent-content: 134 239 172; }
-```
-
-Buttons expose Flux-style semantic `variant`s (`primary`, `filled`/`secondary`,
-`outline`, `ghost`, `subtle`, `danger`) — all themeable, no literal colors:
-
-```blade
-<x-livewind::button>Primary (accent)</x-livewind::button>
-<x-livewind::button variant="subtle">Subtle</x-livewind::button>
-<x-livewind::button variant="danger">Delete</x-livewind::button>
-```
-
-### Dark mode
-
-Toggle by adding/removing `.dark` on `<html>` — tokens do the rest.
-A no-flash snippet for your layout `<head>`:
-
-```html
-<script>
-  const m = localStorage.getItem('lw-appearance') || 'system';
-  const dark = m === 'dark' || (m === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.documentElement.classList.toggle('dark', dark);
-</script>
-```
-
-## Philosophy
-
-- **Minimal served JS bundle:** stateful behavior lives in a small `Alpine.data()` bundle served by the package (no npm on your side); everything else is Livewire + inline Alpine.
-- **Tailwind-only styling:** no CSS framework, no DaisyUI, no custom theme runtime.
-- **DX-first Blade API:** common Livewire patterns like `wire:model`, loading states, validation errors, modals and toasts are available with concise props.
-- **Composable primitives:** complex screens can be built from small Blade components without losing access to Tailwind classes or normal Laravel views.
-
-## Requirements
-
-- PHP 8.1+
-- Laravel 10, 11, 12 or 13
-- Livewire 3.5+ or 4.3+
-- Tailwind CSS 4+
-
-## Publishing
-
-```bash
-php artisan vendor:publish --tag=livewind-config
-php artisan vendor:publish --tag=livewind-views
-```
-
-## Development
-
-```bash
+git clone https://github.com/denisgusto/livewindui.git
+cd livewindui
 composer install
-vendor/bin/pint --test
-vendor/bin/pest
 ```
 
-The demo app lives in `demo/` and consumes the package through a Composer path repository.
+Os quatro comandos de verificação, todos executáveis sem configuração adicional:
 
-## Contributing
+```bash
+vendor/bin/pest          # suíte de testes PHP
+vendor/bin/pint --test   # conformidade PSR-12
+composer analyse         # análise estática (PHPStan/Larastan, nível 5)
+npm install && npm test  # testes da lógica JavaScript (requer Node)
+```
 
-Keep components Blade-first, accessible, Tailwind-only and compatible with Laravel 10+. Add focused Pest tests for every component change.
+---
 
-## License
+## 5. Rastreabilidade — afirmações do TCC e como verificá-las
 
-LivewindUI is open-sourced software licensed under the [MIT license](LICENSE).
+Cada linha associa uma afirmação quantitativa do texto ao comando que a comprova. Os
+valores da coluna "resultado esperado" foram obtidos em 20/07/2026.
+
+| # | Afirmação no TCC | Comando | Resultado esperado |
+|---|---|---|---|
+| 1 | 24 componentes implementados | `ls src/Components \| wc -l` | `24` |
+| 2 | 160 testes e 405 asserções, integralmente aprovados | `vendor/bin/pest` | `Tests: 160 passed (405 assertions)` |
+| 3 | Correspondência 1:1 entre componentes e arquivos de teste | `ls tests/Feature/Components \| wc -l` | `24` |
+| 4 | Lógica JavaScript com testes próprios | `npm test` | `Test Files 3 passed · Tests 17 passed` |
+| 5 | Conformidade PSR-12 (RNF05) | `vendor/bin/pint --test` | `{"tool":"pint","result":"passed"}` |
+| 6 | Análise estática em nível 5 (RNF05) | `composer analyse` | `[OK] No errors` |
+| 7 | Bundle JS ≤ 10 KB não minificado (RNF01) | `wc -c dist/livewind.js` | `3967` bytes |
+| 8 | Compatibilidade Laravel 10 a 13 (RNF02) | `cat .github/workflows/*.yml` | matriz PHP 8.1–8.4 × Laravel 10/11/12/13 |
+| 9 | Arquivo único de tema, sem CSS de componente (RNF04) | `ls resources/css/` | apenas `livewind.css` |
+| 10 | Ausência de `tailwind.config.js` | `ls tailwind.config.js` | arquivo inexistente |
+| 11 | Internacionalização en/pt_BR | `ls lang/*` | `en/` e `pt_BR/`, 3 domínios cada |
+| 12 | Atributos ARIA nos componentes interativos (RNF07) | `grep -rl "aria-\\\|role=" src/Components/ \| wc -l` | `27` arquivos |
+| 13 | 2.969 linhas PHP e 1.260 linhas Blade | `find src -name "*.php" \| xargs wc -l \| tail -1` | `2969` |
+| 14 | Redução de 84,6% em linhas de template (Quadro 6) | `python3 benchmark/medir.py` | ver seção 6 |
+
+### Componentes planejados e **não** implementados
+
+O TCC declara abertamente que sete itens do escopo planejado ficaram de fora, remanejados
+para trabalhos futuros. A ausência é verificável:
+
+```bash
+for c in Drawer Sidebar Grid ButtonGroup Autocomplete DatePicker FileUpload; do
+  test -d "src/Components/$c" && echo "existe: $c" || echo "ausente: $c"
+done
+```
+
+Todos devem retornar `ausente`.
+
+---
+
+## 6. Reprodução da medição de produtividade (Quadro 6)
+
+O Quadro 6 do TCC compara o número de linhas de template necessárias para construir três
+cenários de interface, em duas versões: implementação manual com Blade, Tailwind e
+diretivas Livewire, e implementação com os componentes da biblioteca.
+
+```bash
+python3 benchmark/medir.py
+```
+
+Saída esperada:
+
+```
+Cenário                       Manual  LivewindUI   Redução
+----------------------------------------------------------
+Cenário 1 (Formulário)           120          11     90.8%
+Cenário 2 (Listagem)              68          14     79.4%
+Cenário 3 (Painel)                66          14     78.8%
+----------------------------------------------------------
+Total / Média                    254          39     84.6%
+```
+
+O script regenera os seis arquivos em `benchmark/` e recalcula a contagem do zero,
+permitindo inspeção do código-fonte de cada cenário.
+
+**Critérios de conclusão**, definidos antes da implementação e idênticos para as duas
+versões de cada cenário:
+
+- **Cenário 1 — formulário:** oito campos, cada qual com rótulo, vínculo reativo, estado
+  visual de erro, mensagem de erro e atributos ARIA; botão de envio com indicação de
+  carregamento.
+- **Cenário 2 — listagem:** cabeçalhos ordenáveis, busca com atraso, filtro por seleção,
+  estado vazio e paginação.
+- **Cenário 3 — painel:** três cartões de métrica, janela modal acessível (rótulo, fecho
+  por tecla e por sobreposição) e área de notificações.
+
+**Métrica:** linhas não vazias e que não sejam comentário puro.
+
+**Validação de funcionamento:** as três versões que utilizam a biblioteca foram submetidas
+a renderização efetiva via `Blade::render()` durante a elaboração da medição, assegurando
+que a comparação considera apenas código que de fato funciona. Esse cuidado corrigiu três
+usos incorretos de API na primeira versão da medição.
+
+---
+
+## 7. Limitações declaradas
+
+Registradas no próprio TCC e reproduzidas aqui para transparência da avaliação:
+
+1. **A métrica é de concisão de código, não de tempo.** A medição de tempo de
+   desenvolvimento foi deliberadamente excluída: o autor é o próprio desenvolvedor da
+   biblioteca, e o viés de familiaridade não seria controlável nas condições do estudo.
+2. **As duas implementações comparadas foram produzidas pelo autor**, que conhece
+   previamente a estrutura gerada pelos componentes.
+3. **No cenário 3**, a área de notificações da versão com a biblioteca é fornecida por
+   diretiva de layout e, portanto, não é contabilizada no template — vantagem real de
+   arquitetura que, ainda assim, amplia a diferença medida naquele cenário.
+4. **Não há auditoria automatizada de acessibilidade.** A verificação do RNF07 limitou-se
+   à inspeção estática da presença de atributos ARIA.
+5. **Não há relatório de cobertura de testes.** O ambiente de desenvolvimento não dispõe
+   de Xdebug ou PCOV; o critério do RNF06 foi definido como correspondência 1:1 entre
+   componentes e arquivos de teste, verificável pelo item 3 da seção 5.
+
+---
+
+## 8. Estrutura do repositório
+
+```
+livewindui/
+├── src/
+│   ├── LivewindServiceProvider.php   # registro, diretivas, rota do bundle
+│   ├── Components/<Nome>/            # classe PHP + view Blade (colocation)
+│   ├── Concerns/                     # trait InteractsWithToasts
+│   ├── Console/                      # comando livewind:install
+│   └── Facades/                      # facade Livewind
+├── resources/css/livewind.css        # tema: tokens semânticos, claro e escuro
+├── js/                               # fonte do bundle (Alpine.data + testes Vitest)
+├── dist/livewind.js                  # bundle compilado e versionado
+├── lang/{en,pt_BR}/                  # traduções
+├── tests/Feature/Components/         # um arquivo de teste por componente
+├── benchmark/                        # cenários e script do Quadro 6
+├── config/livewind.php               # prefixo e padrões globais
+├── INSTALL.md                        # documentação de uso (inglês)
+└── README.md                         # este guia de avaliação
+```
+
+---
+
+## 9. Contato
+
+Dúvidas sobre o artefato ou sobre a reprodução das medições:
+**denisgusto@gmail.com** · https://github.com/denisgusto/livewindui
